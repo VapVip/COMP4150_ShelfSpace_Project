@@ -281,31 +281,6 @@ def accountdetails():
 
     return render_template("accountdetails.html")
 
-@app.route("/delete_account", methods=["POST"])
-@login_required
-def delete_account():
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="shelfspace"
-    )
-    cursor = connection.cursor()
-
-    # Delete from correct table based on user role
-    if current_user.role == "customer":
-        cursor.execute("DELETE FROM customer WHERE CustomerID = %s", (current_user.id,))
-    else:  # employee
-        cursor.execute("DELETE FROM employee WHERE EmployeeID = %s", (current_user.id,))
-
-    connection.commit()
-    cursor.close()
-    connection.close()
-
-    logout_user()
-    flash("Your account has been deleted.", "success")
-    return redirect(url_for("home"))
-
 # ----- Display Books -----
 @app.route("/books")
 @login_required
