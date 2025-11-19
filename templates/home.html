@@ -20,11 +20,22 @@
 
         <div class="nav-right">
             {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('register') }}">Register</a>
-            <a href="{{ url_for('login') }}">Log In</a>
+                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Log In</a>
             {% else %}
-            <a href="{{ url_for('accountdetails') }}">Account</a>
-            <a href="{{ url_for('logout') }}">Log Out</a>
+                {% if current_user.role == 'customer' %}
+                    <a href="{{ url_for('view_cart') }}" class="cart-link">
+                        <img src="{{ url_for('static', filename='images/cart-icon.png') }}" alt="Cart" class="cart-icon">
+                        {% if cart_count and cart_count > 0 %}
+                            <span class="cart-badge">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('view_wishlist') }}" class="wishlist-link">
+                        <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('accountdetails') }}">Account</a>
+                <a href="{{ url_for('logout') }}">Log Out</a>
             {% endif %}
         </div>
     </div>

@@ -437,3 +437,355 @@ body {
 }
 
 
+
+
+
+
+/* Style for cart.html */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: rgba(31, 28, 26, 0.60);
+}
+
+.cart-table th, .cart-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cart-table th {
+    background-color: #f4f4f4;
+}
+
+.cart-table tbody {
+    color: #fff;
+}
+
+.cart-table img.cart-book-cover {
+    width: 60px;
+    height: 90px;
+    object-fit: cover;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.quantity-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-form button {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.quantity-form button:hover {
+    background-color: #ddd;
+}
+
+.quantity-form input.quantity-input {
+    width: 40px;
+    text-align: center;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    pointer-events: none; /* prevent manual typing, only + / - buttons allowed */
+}
+
+.remove-button {
+    background-color: #f44336;
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.remove-button:hover {
+    background-color: #e53935;
+}
+
+.cart-summary {
+    margin-top: 20px;
+    text-align: right;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.cart-actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.cart-actions button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.cart-actions button:hover {
+    background-color: #45a049;
+}
+
+
+.cart-table img.book-cover {
+    width: 60px;
+    height: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-control input {
+    width: 40px;
+    text-align: center;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+
+
+
+/* Cart Icon Styling */
+.cart-link {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-icon {
+    width: 26px; /* adjust size */
+    height: 26px;
+    vertical-align: middle;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+/* Wishlist Icon Styling */
+.wishlist-link {
+    display: inline-block;
+}
+
+.wishlist-icon {
+    width: 30px; /* adjust size */
+    height: 30px;
+    vertical-align: middle;
+}
+
+
+
+
+
+/* Edit Book Page Styling */
+/* ---- Edit Book page styles ---- */
+.edit-page {
+    width: 90%;
+    max-width: 1100px;
+    margin: 50px auto 50px; /* leaves space for fixed navbar */
+    color: white;
+}
+
+/* Layout wrapper: image left, form right */
+.edit-wrapper {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 30px;
+    align-items: start;
+    background: #1b1816;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    margin-top: 10px;
+}
+
+
+/* Book cover area */
+.edit-image {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+    padding: 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-image img {
+    width: 100%;
+    height: auto;
+    max-height: 520px;
+    object-fit: contain; /* prevents cropping */
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+/* Edit form box */
+.edit-box {
+    padding: 18px 8px;
+}
+
+.edit-box h2 {
+    margin: 0 0 14px 0;
+    font-size: 28px;
+    color: #fff;
+}
+
+/* form inputs */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.edit-form label {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 6px;
+}
+
+.edit-form input[type="text"],
+.edit-form input[type="number"] {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(43, 40, 38, 0.60);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    outline: none;
+    width: 100%;
+}
+
+.edit-form input:focus {
+    box-shadow: 0 6px 14px rgba(74,144,226,0.12);
+    background: rgba(43, 40, 38, 0.75);
+}
+
+/* actions row */
+.edit-form-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-top: 12px;
+}
+
+/* Save button */
+.edit-btn {
+    padding: 10px 18px;
+    background: #f5a623;
+    color: #111;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(245,166,35,0.15);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(245,166,35,0.18);
+}
+
+/* cancel/back link */
+.cancel-link {
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    transition: background .12s;
+}
+
+.cancel-link:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+
+
+/* Top-right Back button */
+.back-top {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    text-decoration: none;
+    background: rgba(255,255,255,0.10);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: background 0.15s ease;
+}
+
+.back-top:hover {
+    background: rgba(255,255,255,0.20);
+}
+
+/* Edit form sizing */
+.edit-form input[type="text"],
+.edit-form input[type="number"] {
+    width: 70%; 
+    font-size: 17px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+
+.edit-btn {
+    width: 40%;
+    padding: 10px 0;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+/* Back button under navbar, top-left */
+.back-top-left {
+    position: relative;
+    display: inline-block;
+    margin-top: 6px;      /* space below navbar */
+    margin-left: 10px;     /* slight inward padding */
+    color: white;
+    text-decoration: none;
+    background: rgba(255,255,255,0.10);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: background 0.15s ease;
+}
+
+
+.back-top-left:hover {
+    background: rgba(255,255,255,0.20);
+}
+

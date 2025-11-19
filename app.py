@@ -439,7 +439,7 @@ def edit_book(isbn):
 
     cursor.close()
     connection.close()
-    return render_template("employee_edit_book.html", book=book)
+    return render_template("edit_book.html", book=book)
 
 
 # ----- Employee Delete Book -----
@@ -466,6 +466,24 @@ def delete_book(isbn):
 
     flash("Book deleted successfully!", "success")
     return redirect(url_for("books"))
+
+
+# ----- Employee Update Book Info -----
+@app.route("/books/manage")
+@login_required
+def employee_books():
+    if current_user.role not in ["Manager", "Staff", "Admin"]:
+        return "Access Denied"
+    connection = mysql.connector.connect(
+        host="localhost", user="root", password="", database="ShelfSpace"
+    )
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM Book")
+    books = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return render_template("employee_books.html", books=books)
+
 
 
 # ----- Customer Add to Cart -----
@@ -547,6 +565,31 @@ def view_wishlist():
     return render_template("wishlist.html", books=wishlist_books)
 
 
+# ----- Customer Remove from Wishlist -----
+@app.route("/wishlist/remove/<isbn>", methods=["POST"])
+@login_required
+def remove_from_wishlist(isbn):
+    if current_user.role != "customer":
+        return "Access Denied"
+
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="ShelfSpace"
+    )
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM Wishlist WHERE CustomerID = %s AND ISBN = %s",
+                   (current_user.id, isbn))
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    flash("Book removed from wishlist.", "success")
+    return redirect(url_for("view_wishlist"))
+
+
+
 # ----- View Customer Cart -----
 @app.route("/cart")
 @login_required
@@ -571,10 +614,105 @@ def view_cart():
     """, (current_user.id,))
     cart_items = cursor.fetchall()
 
+    # Calculate cart count
+    cart_count = sum(item['Quantity'] for item in cart_items)
+
     connection.close()
 
-    return render_template("cart.html", cart_items=cart_items)
+    return render_template("cart.html", cart_items=cart_items, cart_count=cart_count)
 
+
+
+
+# ----- Customer Update Cart -----
+@app.route("/cart/update/<isbn>", methods=["POST"])
+@login_required
+def update_cart(isbn):
+    if current_user.role != "customer":
+        return "Access Denied"
+
+    quantity = int(request.form.get("quantity", 1))
+    action = request.form.get("action")
+
+    if action == "increase":
+        quantity += 1
+    elif action == "decrease":
+        quantity -= 1
+
+    quantity = max(quantity, 0)
+
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="ShelfSpace"
+    )
+    cursor = connection.cursor()
+
+    if quantity == 0:
+        cursor.execute("DELETE FROM Cart WHERE CustomerID=%s AND ISBN=%s", (current_user.id, isbn))
+    else:
+        cursor.execute("UPDATE Cart SET Quantity=%s WHERE CustomerID=%s AND ISBN=%s", (quantity, current_user.id, isbn))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return redirect(url_for("view_cart"))
+
+
+
+
+# ----- Customer Remove from Cart -----
+@app.route("/cart/remove/<isbn>", methods=["POST"])
+@login_required
+def remove_from_cart(isbn):
+    if current_user.role != "customer":
+        return "Access Denied"
+
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="ShelfSpace"
+    )
+    cursor = connection.cursor()
+
+    cursor.execute(
+        "DELETE FROM Cart WHERE CustomerID=%s AND ISBN=%s",
+        (current_user.id, isbn)
+    )
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    flash("Book removed from cart.", "success")
+    return redirect(url_for("view_cart"))
+
+
+# ----- Context Processor for Cart Count -----
+@app.context_processor
+def inject_cart_count():
+    cart_count = 0
+    if current_user.is_authenticated and current_user.role == "customer":
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="ShelfSpace"
+        )
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT SUM(Quantity) AS total_items
+            FROM Cart
+            WHERE CustomerID = %s
+        """, (current_user.id,))
+        result = cursor.fetchone()
+        if result and result["total_items"]:
+            cart_count = result["total_items"]
+        connection.close()
+    return dict(cart_count=cart_count)
 
 
 
