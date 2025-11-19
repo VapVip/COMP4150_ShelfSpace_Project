@@ -23,12 +23,25 @@
             <a href="{{ url_for('register') }}">Register</a>
             <a href="{{ url_for('login') }}">Log In</a>
             {% else %}
+            <a href="{{ url_for('accountdetails') }}">Account</a>
             <a href="{{ url_for('logout') }}">Log Out</a>
             {% endif %}
         </div>
     </div>
 
-    <p style="width: 15%; justify-self: center;" >
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <p style="width: 15%; justify-self: center;">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed condimentum, eros nec pharetra ultricies, turpis sapien sodales lorem, non sollicitudin sem nisl vel dolor. Aenean nibh velit, vulputate in neque dictum, viverra lobortis augue. Pellentesque tempor, lacus ac fermentum convallis, est est tincidunt lacus, nec placerat ligula lorem eu nisi. Ut pretium risus ut sapien tincidunt dapibus in vitae mauris. Aliquam sit amet maximus massa. Sed consequat ullamcorper ipsum nec laoreet. Donec mattis eros maximus nisl aliquam molestie. Quisque ex dolor, pharetra non neque at, pretium iaculis sem. Etiam volutpat in turpis ut sagittis. Maecenas fermentum, nisi a aliquet fermentum, libero eros gravida nunc, sed convallis ligula dui et augue. Curabitur id dignissim neque. Fusce consequat facilisis ante, et facilisis massa ultricies nec. Nulla vel malesuada tortor. Etiam justo leo, viverra ac hendrerit non, ornare ac libero. Ut convallis fringilla varius. Aliquam finibus nunc id efficitur blandit.
         Aenean rutrum, felis non tempor condimentum, augue ex dignissim metus, ut ullamcorper lorem nisi at elit. Suspendisse tristique, nisl et porttitor molestie, massa metus ultrices massa, at iaculis mi odio et ipsum. Nam pretium porta tempor. Phasellus lorem turpis, pulvinar sed placerat vitae, egestas sit amet mauris. Aliquam fringilla metus a ex finibus egestas. Cras tristique at magna sed dignissim. Pellentesque tristique accumsan elit. Aliquam gravida, mauris ut viverra ultricies, nunc justo euismod enim, egestas malesuada libero tortor quis nisl. Maecenas placerat, lacus eget condimentum ultricies, nisi ex lacinia ex, finibus vestibulum est metus vitae mi. Aliquam et justo malesuada, pharetra magna sed, mollis libero. Phasellus ac sapien non nunc semper blandit at in lectus. Phasellus quis ligula enim.
         Quisque id faucibus odio. Suspendisse et volutpat est. Maecenas pellentesque, neque id accumsan sagittis, purus sapien suscipit ligula, sed pellentesque tellus nulla sit amet enim. Aliquam facilisis tincidunt ornare. Suspendisse a nunc auctor, commodo eros sed, sagittis dolor. Aenean ut tellus placerat, gravida felis in, mattis magna. Mauris convallis felis eros, id vestibulum nisl finibus non.

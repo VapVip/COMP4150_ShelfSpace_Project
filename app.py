@@ -200,6 +200,112 @@ def logout():
 def home():
     return render_template("home.html")
 
+
+# ----- Account Details ------ 
+@app.route("/accountdetails", methods=["GET", "POST"])
+@login_required
+def accountdetails():
+    if request.method == "POST":
+
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="shelfspace"
+        )
+        cursor = connection.cursor(dictionary=True)
+
+        if "email" in request.form:
+            new_email = request.form.get("email")
+
+            # Validate email format
+            if not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", new_email):
+                flash("Invalid email format.", "error")
+                cursor.close()
+                connection.close()
+                return redirect(url_for("accountdetails"))
+
+            # Check if email already exists
+            cursor.execute("SELECT * FROM customer WHERE Email = %s AND CustomerID != %s", (new_email, current_user.id))
+            if cursor.fetchone():
+                flash("That email is already in use.", "error")
+                cursor.close()
+                connection.close()
+                return redirect(url_for("accountdetails"))
+
+            # Update email
+            cursor.execute("UPDATE customer SET Email = %s WHERE CustomerID = %s", (new_email, current_user.id))
+            connection.commit()
+
+            flash("Email updated successfully!", "success")
+
+            cursor.close()
+            connection.close()
+            return redirect(url_for("accountdetails"))
+
+        if "password" in request.form:
+            current_pw = request.form.get("password")
+            new_pw = request.form.get("new_password")
+
+            # Fetch current hashed password from DB
+            cursor.execute("SELECT Password FROM customer WHERE CustomerID = %s", (current_user.id,))
+            row = cursor.fetchone()
+
+            if not row:
+                flash("Unexpected error finding your account.", "error")
+                cursor.close()
+                connection.close()
+                return redirect(url_for("accountdetails"))
+
+            stored_pw = row["Password"]
+
+            # Check if current password matches
+            if (stored_pw != current_pw):
+                flash("Current password is incorrect.", "error")
+                cursor.close()
+                connection.close()
+                return redirect(url_for("accountdetails"))
+
+            # Update password
+            cursor.execute("UPDATE customer SET Password = %s WHERE CustomerID = %s", (new_pw, current_user.id))
+            connection.commit()
+
+            flash("Password updated successfully!", "success")
+
+            cursor.close()
+            connection.close()
+            return redirect(url_for("accountdetails"))
+
+        cursor.close()
+        connection.close()
+
+    return render_template("accountdetails.html")
+
+@app.route("/delete_account", methods=["POST"])
+@login_required
+def delete_account():
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="shelfspace"
+    )
+    cursor = connection.cursor()
+
+    # Delete from correct table based on user role
+    if current_user.role == "customer":
+        cursor.execute("DELETE FROM customer WHERE CustomerID = %s", (current_user.id,))
+    else:  # employee
+        cursor.execute("DELETE FROM employee WHERE EmployeeID = %s", (current_user.id,))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    logout_user()
+    flash("Your account has been deleted.", "success")
+    return redirect(url_for("home"))
+
 # ----- Display Books -----
 @app.route("/books")
 @login_required

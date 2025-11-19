@@ -28,6 +28,20 @@
         </div>
     </div>
 
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <h1 style="font-weight:bold; justify-self:center; padding-top: 50px;">Register a New Account</h1>
+
     <div class="login">
         <div class="register-image">
             <img src="{{ url_for('static', filename='images/logo3.png') }}" />
@@ -45,15 +59,5 @@
             <button type="submit">Create Account</button>
         </form>
     </div>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <div class="flash-messages">
-        {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
 </body>
 </html>
