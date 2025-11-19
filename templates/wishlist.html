@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Wishlist – ShelfSpace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>My Wishlist</h1>
+
+    {% if books %}
+        <ul class="book-grid">
+        {% for book in books %}
+            <li class="book-card">
+                <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <h3>{{ book.Title }}</h3>
+                    <p>by {{ book.Author }}</p>
+                    <p>${{ book.Price }}</p>
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your wishlist is empty.</p>
+    {% endif %}
+</body>
+</html>

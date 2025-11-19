@@ -1,16 +1,190 @@
-<h1>Books</h1>
-{% if current_user.role == 'employee' %}
-    <a href="{{ url_for('add_book') }}">Add New Book</a>
-{% endif %}
-<ul>
-{% for book in books %}
-    <li>
-        {{ book.title }} by {{ book.author }} - ${{ book.price }}
-        <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">View</a>
-        {% if current_user.role == 'employee' %}
-            | <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
-            | <a href="{{ url_for('delete_book', isbn=book.ISBN) }}">Delete</a>
-        {% endif %}
-    </li>
-{% endfor %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Books – ShelfSpace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Quick inline styles for stars */
+        .stars {
+            color: gold;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        .filter-container {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('books') }}">Books</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+        <div class="nav-center">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" />
+        </div>
+        <div class="nav-right">
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Log In</a>
+            {% else %}
+                {% if current_user.role == 'customer' %}
+                    <a href="{{ url_for('view_cart') }}">Cart</a>
+                    <a href="{{ url_for('view_wishlist') }}">My Wishlist</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}">Log Out</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="page-container">
+
+            <h1>Books</h1>
+
+        <!-- SEARCH BAR -->
+        <div class="search-container">
+            <form method="get" action="{{ url_for('books') }}">
+                <input type="text" name="search" placeholder="Search by title or author" value="{{ search_query }}">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+
+        <!-- FILTER -->
+        <div class="filter-container">
+        <!-- Genre Filter -->
+        <label for="genre-filter">Filter by genre:</label>
+        <select id="genre-filter" onchange="filterBooks()">
+            <option value="all">All</option>
+            {% for genre in genres %}
+                <option value="{{ genre }}">{{ genre }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Author Filter -->
+        <label for="author-filter">Filter by author:</label>
+        <select id="author-filter" onchange="filterBooks()">
+            <option value="all">All</option>
+            {% for author in authors %}
+                <option value="{{ author }}">{{ author }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Price Range Filter -->
+        <label for="price-filter">Price up to:</label>
+        <select id="price-filter" onchange="filterBooks()">
+            <option value="all">All</option>
+            <option value="10">$10</option>
+            <option value="20">$20</option>
+            <option value="50">$50</option>
+            <option value="100">$100</option>
+        </select>
+    </div>
+
+
+
+        <!-- BOOK GRID -->
+        <ul class="book-grid">
+        {% for book in books %}
+            <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
+                <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <img class="book-cover"
+                        src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
+                        onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
+                        alt="Cover for {{ book.Title }}">
+                    <h3>{{ book.Title }}</h3>
+                    <p>by {{ book.Author }}</p>
+                    <p>${{ book.Price }}</p>
+
+                    {% if book.avg_rating %}
+                        <div class="stars">
+                            {% for i in range(1, 6) %}
+                                {% if i <= book.avg_rating|round(0, 'floor') %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                            ({{ book.avg_rating }})
+                        </div>
+                    {% else %}
+                        <div class="stars">
+                            No reviews yet
+                        </div>
+                    {% endif %}
+                </a>
+
+                <!-- Employee Actions -->
+                {% if current_user.role != 'customer' %}
+                    <div class="book-actions">
+                        <!-- Edit stays a link because it’s GET -->
+                        <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
+                        <br>
+                        <!-- Delete uses POST form -->
+                        <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </div>
+
+                <!-- Customer Actions -->
+                {% else %}
+                    <!-- Customer Actions -->
+                    <div class="book-actions">
+                        <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
+                            <button type="submit">Add to Cart</button>
+                        </form>
+
+                        <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
+                            <button type="submit">Wishlist</button>
+                        </form>
+                    </div>
+                {% endif %}
+
+            </li>
+        {% endfor %}
 </ul>
+
+
+    </div>
+
+    <script>
+        function filterBooks() {
+            const genre = document.getElementById('genre-filter').value;
+            const author = document.getElementById('author-filter').value;
+            const price = document.getElementById('price-filter').value;
+            const books = document.querySelectorAll('.book-card');
+
+            books.forEach(book => {
+                let show = true;
+
+                if (genre !== 'all' && book.dataset.genre !== genre) show = false;
+                if (author !== 'all' && book.dataset.author !== author) show = false;
+                if (price !== 'all' && parseFloat(book.dataset.price) > parseFloat(price)) show = false;
+
+                book.style.display = show ? 'block' : 'none';
+            });
+        }
+    </script>
+
+</body>
+</html>
+
+
+
