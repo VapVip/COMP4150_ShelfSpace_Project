@@ -6,10 +6,14 @@
 
 <h2>Reviews:</h2>
 <ul>
-{% for review in reviews %}
-    <li>{{ review.username }}: {{ review.text }} ({{ review.rating }}/5)</li>
+{% for r in reviews %}
+    <p><strong>{{ r.Username }}</strong> ({{ r.Date }})</p>
+    <p>Rating: {{ r.Rating }}/5</p>
+    <p>{{ r.ReviewText }}</p>
+    <hr>
 {% endfor %}
 </ul>
+
 
 {% if current_user.role == 'customer' %}
     <a href="{{ url_for('add_review', isbn=book.ISBN) }}">Add Review</a>
