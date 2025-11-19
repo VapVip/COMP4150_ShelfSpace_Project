@@ -21,11 +21,26 @@
         <div class="nav-right">
             {% if not current_user.is_authenticated %}
             <a href="{{ url_for('register') }}">Register</a>
-            <a href="{{ url_for('login') }}">Log In</a>
+            <a class="navbar_active" href="{{ url_for('login') }}">Log In</a>
             {% else %}
             <a href="{{ url_for('logout') }}">Log Out</a>
             {% endif %}
         </div>
+    </div>
+
+    <div class="login">
+        <div class="login-image">
+            <img src="{{ url_for('static', filename='images/logo3.png') }}" />
+        </div>
+        <form method="POST" class="login-form">
+            <label>Email:</label><br>
+            <input type="text" name="email"><br><br>
+
+            <label>Password:</label><br>
+            <input type="password" name="password"><br><br>
+
+            <button type="submit">Login</button>
+        </form>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -37,17 +52,5 @@
     </div>
     {% endif %}
     {% endwith %}
-
-    <div class="login">
-        <form method="POST">
-            <label>Email:</label><br>
-            <input type="text" name="email"><br><br>
-
-            <label>Password:</label><br>
-            <input type="password" name="password"><br><br>
-
-            <button type="submit">Login</button>
-        </form>
-    </div>
 </body>
 </html>

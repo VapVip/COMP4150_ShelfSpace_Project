@@ -1,6 +1,7 @@
 ﻿from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import mysql.connector
+import re
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -127,8 +128,66 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    # Add registration logic here
-    pass
+    if request.method == "POST":
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        # check that credentials arent already in use
+        if not username or not email or not password:
+            flash("All fields are required.", "error")
+            return redirect(url_for("register"))
+           
+        # check that email is a valid email
+        if not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email):
+            flash("Invalid email format.", "error")
+            return redirect(url_for("register"))
+
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="shelfspace"
+        )
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM customer WHERE Email = %s", (email,))
+        if cursor.fetchone():
+            flash("An account with this email already exists.", "error")
+            cursor.close()
+            connection.close()
+            return redirect(url_for("register"))
+
+        cursor.execute("SELECT * FROM customer WHERE Username = %s", (username,))
+        if cursor.fetchone():
+            flash("Username is already taken.", "error")
+            cursor.close()
+            connection.close()
+            return redirect(url_for("register"))
+
+        # need to implement password hashing: hashed_password = generate_password_hash(password)
+
+        insert_query = """
+            INSERT INTO customer (Username, Email, Password)
+            VALUES (%s, %s, %s)
+        """
+        cursor.execute(insert_query, (username, email, password))
+        connection.commit()
+
+        new_user_id = cursor.lastrowid
+
+        cursor.close()
+        connection.close()
+
+        user = User(id=new_user_id, username=username, role="customer")
+
+        login_user(user)
+
+        flash("Account created successfully!", "success")
+        return redirect(url_for("home"))
+
+    return render_template("register.html")
+
 
 @app.route("/logout")
 @login_required
@@ -145,12 +204,36 @@ def home():
 @app.route("/books")
 @login_required
 def books():
-    connection = mysql.connector.connect(host="localhost", user="root", password="", database="shelfspace")
+    connection = mysql.connector.connect(host="localhost", user="root", password="", database="ShelfSpace")
     cursor = connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM book")
     books = cursor.fetchall()
     connection.close()
     return render_template("books.html", books=books)
+
+# ----- Book Detail -----
+@app.route("/books/<isbn>")
+@login_required
+def book_detail(isbn):
+    connection = mysql.connector.connect(host="localhost", user="root", password="", database="ShelfSpace")
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM book WHERE ISBN=%s", (isbn,))
+    book = cursor.fetchone()
+    cursor.execute("SELECT r.text, r.rating, u.username FROM review r JOIN users u ON r.user_id=u.user_id WHERE r.ISBN=%s", (isbn,))
+    reviews = cursor.fetchall()
+    connection.close()
+    return render_template("book_detail.html", book=book, reviews=reviews)
+
+# ----- Employee Add Book -----
+@app.route("/books/add", methods=["GET", "POST"])
+@login_required
+def add_book():
+    if current_user.role != "employee":
+        return "Access Denied"
+    if request.method == "POST":
+        # Add book to database
+        pass
+    return render_template("employee_add_book.html")
 
 
 if __name__ == "__main__":
