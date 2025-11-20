@@ -79,9 +79,10 @@
                         ({{ book.avg_rating }})
                     </div>
                 {% else %}
-                    <div class="stars">No reviews yet</div>
+                    <div class="stars">
+                        ☆☆☆☆☆ (0.0)
+                    </div>
                 {% endif %}
-
 
                 <!-- Actions -->
                 <div class="book-actions">
@@ -111,9 +112,34 @@
 
                 <!-- Reviews -->
                 <div class="reviews">
-                    <h2>Reviews:</h2>
-                    {% if reviews|length > 0 %}
-                        {% for r in reviews %}
+                    <h2>Reviews ({{ reviews|length }})</h2>
+
+                    <!-- Sorting + Filter Bar -->
+                    <div class="review-sort-bar">
+                        <form action="" method="get">
+                            <!-- Keep existing GET params like ISBN automatically -->
+                            
+                            <label>Sort:</label>
+                            <select name="sort" onchange="this.form.submit()">
+                                <option value="">Default</option>
+                                <option value="low"  {% if request.args.get('sort') == 'low' %}selected{% endif %}>Rating: Low → High</option>
+                                <option value="high" {% if request.args.get('sort') == 'high' %}selected{% endif %}>Rating: High → Low</option>
+                            </select>
+
+                            <label style="margin-left:12px;">Filter:</label>
+                            <select name="stars" onchange="this.form.submit()">
+                                <option value="">All</option>
+                                {% for i in range(5,0,-1) %}
+                                    <option value="{{ i }}" {% if request.args.get('stars') == i|string %}selected{% endif %}>
+                                        {{ i }} ★ reviews
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+
+                    {% if filtered_reviews|length > 0 %}
+                        {% for r in filtered_reviews %}
                             <div class="review">
                                 <p><strong>{{ r.Username }}</strong> ({{ r.Date }})</p>
                                 <p>Rating: {{ r.Rating }}/5</p>

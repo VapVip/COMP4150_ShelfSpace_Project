@@ -201,20 +201,20 @@ def home():
     return render_template("home.html")
 
 
+
 # ----- Account Details ------ 
 @app.route("/accountdetails", methods=["GET", "POST"])
 @login_required
 def accountdetails():
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="shelfspace"
+    )
+    cursor = connection.cursor(dictionary=True)
+
     if request.method == "POST":
-
-        connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="shelfspace"
-        )
-        cursor = connection.cursor(dictionary=True)
-
         if "email" in request.form:
             new_email = request.form.get("email")
 
@@ -223,22 +223,21 @@ def accountdetails():
                 flash("Invalid email format.", "error")
                 cursor.close()
                 connection.close()
-                return redirect(url_for("accountdetails"))
+                return redirect(url_for("account_details"))
 
             # Check if email already exists
-            cursor.execute("SELECT * FROM customer WHERE Email = %s AND CustomerID != %s", (new_email, current_user.id))
+            cursor.execute("SELECT * FROM Customer WHERE Email = %s AND CustomerID != %s", (new_email, current_user.id))
             if cursor.fetchone():
                 flash("That email is already in use.", "error")
                 cursor.close()
                 connection.close()
-                return redirect(url_for("accountdetails"))
+                return redirect(url_for("account_details"))
 
             # Update email
-            cursor.execute("UPDATE customer SET Email = %s WHERE CustomerID = %s", (new_email, current_user.id))
+            cursor.execute("UPDATE Customer SET Email = %s WHERE CustomerID = %s", (new_email, current_user.id))
             connection.commit()
 
             flash("Email updated successfully!", "success")
-
             cursor.close()
             connection.close()
             return redirect(url_for("accountdetails"))
@@ -248,38 +247,113 @@ def accountdetails():
             new_pw = request.form.get("new_password")
 
             # Fetch current hashed password from DB
-            cursor.execute("SELECT Password FROM customer WHERE CustomerID = %s", (current_user.id,))
+            cursor.execute("SELECT Password FROM Customer WHERE CustomerID = %s", (current_user.id,))
             row = cursor.fetchone()
 
             if not row:
                 flash("Unexpected error finding your account.", "error")
                 cursor.close()
                 connection.close()
-                return redirect(url_for("accountdetails"))
+                return redirect(url_for("account_details"))
 
             stored_pw = row["Password"]
 
             # Check if current password matches
-            if (stored_pw != current_pw):
+            if stored_pw != current_pw:
                 flash("Current password is incorrect.", "error")
                 cursor.close()
                 connection.close()
-                return redirect(url_for("accountdetails"))
+                return redirect(url_for("account_details"))
 
             # Update password
-            cursor.execute("UPDATE customer SET Password = %s WHERE CustomerID = %s", (new_pw, current_user.id))
+            cursor.execute("UPDATE Customer SET Password = %s WHERE CustomerID = %s", (new_pw, current_user.id))
             connection.commit()
 
             flash("Password updated successfully!", "success")
-
             cursor.close()
             connection.close()
-            return redirect(url_for("accountdetails"))
+            return redirect(url_for("account_details"))
 
+    # --- Fetch all reviews by this user with book info ---
+    cursor.execute("""
+        SELECT r.ReviewID, r.Rating, r.ReviewText, r.Date, r.ISBN, b.Title AS book_title, b.Author AS book_author
+        FROM Review r
+        JOIN Book b ON r.ISBN = b.ISBN
+        WHERE r.CustomerID = %s
+    """, (current_user.id,))
+    reviews = cursor.fetchall()
+
+
+
+    cursor.close()
+    connection.close()
+
+    return render_template("account_details.html", reviews=reviews)
+
+
+
+# ----- Edit Review -----
+@app.route("/edit_review/<int:review_id>", methods=["GET", "POST"])
+@login_required
+def edit_review(review_id):
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="shelfspace"
+    )
+    cursor = connection.cursor(dictionary=True)
+
+    # Fetch review
+    cursor.execute("SELECT * FROM Review WHERE ReviewID = %s AND CustomerID = %s", (review_id, current_user.id))
+    review = cursor.fetchone()
+    if not review:
+        flash("Review not found.", "error")
         cursor.close()
         connection.close()
+        return redirect(url_for("accountdetails"))
 
-    return render_template("accountdetails.html")
+    if request.method == "POST":
+        new_rating = request.form.get("rating")
+        new_text = request.form.get("review_text")
+        cursor.execute(
+            "UPDATE Review SET Rating = %s, ReviewText = %s WHERE ReviewID = %s",
+            (new_rating, new_text, review_id)
+        )
+        connection.commit()
+        flash("Review updated successfully!", "success")
+        cursor.close()
+        connection.close()
+        return redirect(url_for("accountdetails"))
+
+    cursor.close()
+    connection.close()
+    return render_template("edit_review.html", review=review)
+
+
+
+
+# ----- Delete Review -----
+@app.route("/delete_review/<int:review_id>", methods=["POST"])
+@login_required
+def delete_review(review_id):
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="shelfspace"
+    )
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM Review WHERE ReviewID = %s AND CustomerID = %s", (review_id, current_user.id))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    flash("Review deleted successfully!", "success")
+    return redirect(url_for("accountdetails"))
+
+
+
+
 
 # ----- Display Books -----
 @app.route("/books")
@@ -355,6 +429,7 @@ def books():
 
 
 
+
 # ----- Book Detail -----
 @app.route("/books/<isbn>")
 @login_required
@@ -385,16 +460,38 @@ def book_detail(isbn):
     """, (isbn,))
     reviews = cursor.fetchall()
 
-    # Compute average rating
+    # ----- Sorting + Filtering -----
+    sort = request.args.get("sort")   # "low", "high", or None
+    stars = request.args.get("stars") # "1"–"5" or None
+
+    filtered_reviews = reviews.copy()
+
+    # Filter by star rating
+    if stars and stars.isdigit():
+        filtered_reviews = [r for r in filtered_reviews if r["Rating"] == int(stars)]
+
+    # Sort
+    if sort == "low":
+        filtered_reviews = sorted(filtered_reviews, key=lambda r: r["Rating"])
+    elif sort == "high":
+        filtered_reviews = sorted(filtered_reviews, key=lambda r: r["Rating"], reverse=True)
+
+    # Compute average rating (use all reviews, not filtered ones)
     if reviews:
-        avg_rating = sum([r['Rating'] for r in reviews]) / len(reviews)
-        book['avg_rating'] = round(avg_rating, 1)
+        avg_rating = sum(r["Rating"] for r in reviews) / len(reviews)
+        book["avg_rating"] = round(avg_rating, 1)
     else:
-        book['avg_rating'] = None
+        book["avg_rating"] = None
 
     connection.close()
 
-    return render_template("book_detail.html", book=book, reviews=reviews)
+    return render_template(
+        "book_detail.html",
+        book=book,
+        reviews=reviews,                 # original list (for avg calc + count)
+        filtered_reviews=filtered_reviews   # list after filter/sort
+    )
+
 
 
 
@@ -604,6 +701,7 @@ def view_wishlist():
     )
     cursor = connection.cursor(dictionary=True)
 
+    # Get wishlist books
     cursor.execute("""
         SELECT b.ISBN, b.Title, b.Author, b.Price
         FROM Wishlist w
@@ -611,12 +709,22 @@ def view_wishlist():
         WHERE w.CustomerID = %s
         ORDER BY w.DateAdded DESC
     """, (current_user.id,))
-
     wishlist_books = cursor.fetchall()
+
+    # Compute average rating for each book
+    for book in wishlist_books:
+        cursor.execute("SELECT Rating FROM Review WHERE ISBN = %s", (book['ISBN'],))
+        ratings = [r['Rating'] for r in cursor.fetchall()]
+        if ratings:
+            book['avg_rating'] = round(sum(ratings) / len(ratings), 1)
+        else:
+            book['avg_rating'] = 0.0
+
     cursor.close()
     connection.close()
 
     return render_template("wishlist.html", books=wishlist_books)
+
 
 
 # ----- Customer Remove from Wishlist -----

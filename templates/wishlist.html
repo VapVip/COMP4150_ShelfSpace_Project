@@ -90,17 +90,16 @@
                         </div>
                     {% else %}
                         <div class="stars">
-                            No reviews yet
+                            ☆☆☆☆☆ (0.0)
                         </div>
                     {% endif %}
                 </a>
 
                 <!-- Customer Actions -->
-                <div class="book-actions">
+                <div class="book-actions-vertical">
                     <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Add to Cart</button>
                     </form>
-                    <br>
                     <form method="POST" action="{{ url_for('remove_from_wishlist', isbn=book.ISBN) }}">
                         <button type="submit">Remove</button>
                     </form>

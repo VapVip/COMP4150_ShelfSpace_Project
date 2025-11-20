@@ -117,6 +117,7 @@
                         src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
                         alt="Cover for {{ book.Title }}">
+                    
                     <h3>{{ book.Title }}</h3>
                     <p>by {{ book.Author }}</p>
                     <p>${{ book.Price }}</p>
@@ -134,19 +135,19 @@
                         </div>
                     {% else %}
                         <div class="stars">
-                            No reviews yet
+                            ☆☆☆☆☆ (0.0)
                         </div>
                     {% endif %}
                 </a>
 
                 <!-- Employee Actions -->
                 {% if current_user.role != 'customer' %}
-                    <div class="book-actions">
+                    <div class="book-actions-vertical">
                         <!-- Edit stays a link because it’s GET -->
                         <form method="get" action="{{ url_for('edit_book', isbn=book.ISBN) }}" style="display:inline;">
                             <button type="submit">Edit</button>
                         </form>
-                        <br>
+
                         <!-- Delete uses POST form -->
                         <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
                             <button type="submit">Delete</button>
@@ -156,12 +157,12 @@
                 <!-- Customer Actions -->
                 {% else %}
                     <!-- Customer Actions -->
-                    <div class="book-actions">
-                        <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
+                    <div class="book-actions-vertical">
+                        <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}">
                             <button type="submit">Add to Cart</button>
                         </form>
-                        <br>
-                        <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
+
+                        <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}">
                             <button type="submit">Wishlist</button>
                         </form>
                     </div>
@@ -169,8 +170,7 @@
 
             </li>
         {% endfor %}
-</ul>
-
+    </ul>
 
     </div>
 
