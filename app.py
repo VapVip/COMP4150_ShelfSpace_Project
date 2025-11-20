@@ -385,9 +385,63 @@ def book_detail(isbn):
     """, (isbn,))
     reviews = cursor.fetchall()
 
+    # Compute average rating
+    if reviews:
+        avg_rating = sum([r['Rating'] for r in reviews]) / len(reviews)
+        book['avg_rating'] = round(avg_rating, 1)
+    else:
+        book['avg_rating'] = None
+
     connection.close()
 
     return render_template("book_detail.html", book=book, reviews=reviews)
+
+
+
+
+
+
+# ----- Add Review -----
+@app.route('/books/<isbn>/add_review', methods=['GET', 'POST'])
+@login_required
+def add_review(isbn):
+    if current_user.role != "customer":
+        return "Access Denied"
+
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="ShelfSpace"
+    )
+    cursor = connection.cursor(dictionary=True)
+
+    # Get the book details
+    cursor.execute("SELECT * FROM Book WHERE ISBN = %s", (isbn,))
+    book = cursor.fetchone()
+
+    if request.method == 'POST':
+        review_text = request.form.get('review_text')
+        rating = int(request.form.get('rating', 0))
+
+        cursor.execute("""
+            INSERT INTO Review (CustomerID, ISBN, ReviewText, Rating, Date)
+            VALUES (%s, %s, %s, %s, NOW())
+        """, (current_user.id, isbn, review_text, rating))
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        flash("Review added successfully!", "success")
+        return redirect(url_for('book_detail', isbn=isbn))
+
+    cursor.close()
+    connection.close()
+    return render_template('add_review.html', book=book)
+
+
+
 
 
 # ----- Employee Add Book -----

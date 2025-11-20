@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write a Review – {{ book.Title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('books') }}">Books</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+        <div class="nav-center">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" />
+        </div>
+        <div class="nav-right">
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Log In</a>
+            {% else %}
+                {% if current_user.role == 'customer' %}
+                    <a href="{{ url_for('view_cart') }}" class="cart-link">
+                        <img src="{{ url_for('static', filename='images/cart-icon.png') }}" alt="Cart" class="cart-icon">
+                        {% if cart_count and cart_count > 0 %}
+                            <span class="cart-badge">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('view_wishlist') }}" class="wishlist-link">
+                        <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('accountdetails') }}">Account</a>
+                <a href="{{ url_for('logout') }}">Log Out</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="edit-page">
+
+        <!-- Back to Book Detail -->
+        <a href="{{ url_for('book_detail', isbn=book.ISBN) }}" class="back-top-left">← Back to Book Details</a>
+
+        <div class="edit-wrapper">
+
+            <!-- Book Cover -->
+            <div class="edit-image">
+                <img src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
+                     onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
+                     alt="Cover for {{ book.Title }}">
+            </div>
+
+            <!-- Review Form Box -->
+            <div class="edit-box">
+                <h2>Review for "{{ book.Title }}"</h2>
+                <p class="review-author">By: {{ current_user.username }}</p>
+
+                <form method="POST" action="{{ url_for('add_review', isbn=book.ISBN) }}" class="review-form">
+                    
+                    <!-- Star Rating -->
+                    <label><strong>Rating:</strong></label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5">
+                        <label for="star5" title="5 stars">★</label>
+
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4" title="4 stars">★</label>
+
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3" title="3 stars">★</label>
+
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2" title="2 stars">★</label>
+
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1" title="1 star">★</label>
+                    </div>
+
+
+                    <!-- Review Text -->
+                    <label for="review_text"><strong>Review:</strong></label>
+                    <textarea name="review_text" id="review_text" placeholder="Write your review here..." required></textarea>
+
+                    <!-- Submit Button -->
+                    <div style="margin-top: 15px;">
+                        <button type="submit" class="submit-review-btn">Submit Review</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
+
+

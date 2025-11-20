@@ -1,20 +1,135 @@
-<h1>{{ book.title }}</h1>
-<p>Author: {{ book.author }}</p>
-<p>Price: ${{ book.price }}</p>
-<p>Description: {{ book.description }}</p>
-<p>Stock: {{ book.stock }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.Title }} – ShelfSpace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-<h2>Reviews:</h2>
-<ul>
-{% for r in reviews %}
-    <p><strong>{{ r.Username }}</strong> ({{ r.Date }})</p>
-    <p>Rating: {{ r.Rating }}/5</p>
-    <p>{{ r.ReviewText }}</p>
-    <hr>
-{% endfor %}
-</ul>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('books') }}">Books</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+        <div class="nav-center">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" />
+        </div>
+        <div class="nav-right">
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Log In</a>
+            {% else %}
+                {% if current_user.role == 'customer' %}
+                    <a href="{{ url_for('view_cart') }}" class="cart-link">
+                        <img src="{{ url_for('static', filename='images/cart-icon.png') }}" alt="Cart" class="cart-icon">
+                        {% if cart_count and cart_count > 0 %}
+                            <span class="cart-badge">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('view_wishlist') }}" class="wishlist-link">
+                        <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('accountdetails') }}">Account</a>
+                <a href="{{ url_for('logout') }}">Log Out</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="edit-page">
+
+        <!-- Back to Books -->
+        <a href="{{ url_for('books') }}" class="back-top-left">← Back to Books</a>
+
+        <div class="edit-wrapper">
+
+            <!-- Book Cover -->
+            <div class="edit-image">
+                <img src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
+                     onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
+                     alt="Cover for {{ book.Title }}">
+            </div>
+
+            <!-- Book Info Box -->
+            <div class="edit-box">
+                <h2>{{ book.Title }}</h2>
+
+                <p><strong>Author:</strong> {{ book.Author }}</p>
+                <p><strong>Genre:</strong> {{ book.Genre }}</p>
+                <p><strong>Price:</strong> ${{ book.Price }}</p>
+                <p><strong>Stock:</strong> {{ book.Stock }}</p>
+                <p><strong>Description:</strong></p>
+                <p>{{ book.Description }}</p>
+
+                <!-- Average Rating -->
+                {% if reviews|length > 0 %}
+                    <div class="stars">
+                        {% for i in range(1, 6) %}
+                            {% if i <= book.avg_rating|round(0, 'floor') %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                        ({{ book.avg_rating }})
+                    </div>
+                {% else %}
+                    <div class="stars">No reviews yet</div>
+                {% endif %}
 
 
-{% if current_user.role == 'customer' %}
-    <a href="{{ url_for('add_review', isbn=book.ISBN) }}">Add Review</a>
-{% endif %}
+                <!-- Actions -->
+                <div class="book-actions">
+                    {% if current_user.role != 'customer' %}
+                        <form method="get" action="{{ url_for('edit_book', isbn=book.ISBN) }}" style="display:inline;">
+                            <button type="submit">Edit</button>
+                        </form>
+                        <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    {% else %}
+                        <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
+                            <button type="submit">Add to Cart</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
+                            <button type="submit">Wishlist</button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <!-- Write a Review Button (Customers Only) -->
+                {% if current_user.role == 'customer' %}
+                    <form action="{{ url_for('add_review', isbn=book.ISBN) }}" method="get" style="margin: 16px 0;">
+                        <button type="submit" class="review-btn">Write a Review</button>
+                    </form>
+                {% endif %}
+
+                <!-- Reviews -->
+                <div class="reviews">
+                    <h2>Reviews:</h2>
+                    {% if reviews|length > 0 %}
+                        {% for r in reviews %}
+                            <div class="review">
+                                <p><strong>{{ r.Username }}</strong> ({{ r.Date }})</p>
+                                <p>Rating: {{ r.Rating }}/5</p>
+                                <p>{{ r.ReviewText }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No reviews yet.</p>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
+
