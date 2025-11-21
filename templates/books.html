@@ -53,7 +53,14 @@
     <!-- PAGE CONTENT -->
     <div class="page-container">
 
-            <h1>Books</h1>
+        <h1>Books</h1>
+
+        {% if current_user.role != 'customer' %}
+            <div style="margin-bottom: 20px;">
+                <a href="{{ url_for('add_book') }}" class="add-book-btn">+ Add New Book</a>
+            </div>
+        {% endif %}
+
 
         <!-- SEARCH BAR -->
         <div class="search-container">

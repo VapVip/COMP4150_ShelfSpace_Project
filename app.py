@@ -29,7 +29,8 @@ def load_user(user_id):
         host="localhost",
         user="root",
         password="",
-        database="shelfspace"
+        database="shelfspace",
+        autocommit=True  
     )
     cursor = connection.cursor(dictionary=True)
     query = """
@@ -545,12 +546,79 @@ def add_review(isbn):
 @app.route("/books/add", methods=["GET", "POST"])
 @login_required
 def add_book():
-    if current_user.role != "employee":
-        return "Access Denied"
+    # Only employees can add books
+    if current_user.role == "Customer":
+        return "Access Denied", 403
+
+    # -------------------------
+    # GET REQUEST → Load genres
+    # -------------------------
+    if request.method == "GET":
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="ShelfSpace"
+        )
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT DISTINCT Genre FROM Book ORDER BY Genre")
+        genres = [row["Genre"] for row in cursor.fetchall() if row["Genre"]]
+
+        cursor.close()
+        connection.close()
+
+        return render_template("add_book.html", genres=genres)
+
+    # -------------------------
+    # POST REQUEST → Add book
+    # -------------------------
     if request.method == "POST":
-        # Add book to database
-        pass
-    return render_template("employee_add_book.html")
+        isbn = request.form['isbn']
+        title = request.form['title']
+        author = request.form['author']
+        genre = request.form['genre']
+        description = request.form['description']
+        price = request.form['price']
+        stock_qty = request.form['stock']
+
+        # ---- Handle image upload ----
+        cover = request.files.get('cover')
+        filename = None
+        
+        if cover:
+            ext = os.path.splitext(cover.filename)[1]  # keep original extension
+            filename = secure_filename(f"{isbn}{ext}")
+            cover.save(os.path.join(save_path, filename))
+
+
+        # ---- Insert book into DB ----
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="ShelfSpace"
+        )
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO Book (ISBN, Title, Author, Genre, Description, Price, StockQty, AddedBy)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            isbn, title, author, genre,
+            description, price, stock_qty,
+            current_user.id
+        ))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        flash("Book added successfully!", "success")
+        return redirect(url_for("books"))
+
+
+
     
 
 # ----- Employee Edit Book -----

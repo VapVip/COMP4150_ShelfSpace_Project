@@ -433,6 +433,23 @@ body {
     color: #721c24;
 }
 
+/* For Add Book Button */
+.add-book-btn {
+    display: inline-block;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s ease;
+}
+
+.add-book-btn:hover {
+    background-color: #45a049;
+}
+
+
 
 
 
