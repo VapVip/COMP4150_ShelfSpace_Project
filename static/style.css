@@ -470,6 +470,7 @@ img {
 .book-actions {
     margin: 10px 0;
     font-size: 0.9em;
+    justify-content: center;
 }
 
 .book-cover {
