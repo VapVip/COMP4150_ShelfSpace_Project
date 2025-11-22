@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,22 +23,22 @@
         </div>
         <div class="nav-right">
             {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('register') }}">Register</a>
-                <a href="{{ url_for('login') }}">Log In</a>
+            <a href="{{ url_for('register') }}">Register</a>
+            <a href="{{ url_for('login') }}">Log In</a>
             {% else %}
-                {% if current_user.role == 'customer' %}
-                    <a href="{{ url_for('view_cart') }}" class="cart-link">
-                        <img src="{{ url_for('static', filename='images/cart-icon.png') }}" alt="Cart" class="cart-icon">
-                        {% if cart_count and cart_count > 0 %}
-                            <span class="cart-badge">{{ cart_count }}</span>
-                        {% endif %}
-                    </a>
-                    <a href="{{ url_for('view_wishlist') }}" class="wishlist-link">
-                        <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
-                    </a>
+            {% if current_user.role == 'customer' %}
+            <a href="{{ url_for('view_cart') }}" class="cart-link">
+                <img src="{{ url_for('static', filename='images/cart-icon.png') }}" alt="Cart" class="cart-icon">
+                {% if cart_count and cart_count > 0 %}
+                <span class="cart-badge">{{ cart_count }}</span>
                 {% endif %}
-                <a href="{{ url_for('accountdetails') }}">Account</a>
-                <a href="{{ url_for('logout') }}">Log Out</a>
+            </a>
+            <a href="{{ url_for('view_wishlist') }}" class="wishlist-link">
+                <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
+            </a>
+            {% endif %}
+            <a href="{{ url_for('accountdetails') }}">Account</a>
+            <a href="{{ url_for('logout') }}">Log Out</a>
             {% endif %}
         </div>
     </div>
@@ -61,7 +64,7 @@
                 <p class="review-author">By: {{ current_user.username }}</p>
 
                 <form method="POST" action="{{ url_for('add_review', isbn=book.ISBN) }}" class="review-form">
-                    
+
                     <!-- Star Rating -->
                     <label><strong>Rating:</strong></label>
                     <div class="star-rating">

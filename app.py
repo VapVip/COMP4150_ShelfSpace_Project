@@ -199,7 +199,60 @@ def logout():
 # ----- Homepage -----
 @app.route("/")
 def home():
-    return render_template("home.html")
+
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="ShelfSpace"
+    )
+    cursor = connection.cursor(dictionary=True)
+
+
+    genre_filter = request.args.get("genre", "all")
+
+    # Base query
+    query = "SELECT ISBN, Title, Author, Genre, Price FROM Book"
+    params = []
+
+    # Apply search and genre filter
+    conditions = []
+    if genre_filter != "all":
+        conditions.append("Genre = %s")
+        params.append(genre_filter)
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    query += " ORDER BY Title ASC"
+
+    cursor.execute(query, params)
+    books = cursor.fetchall()
+
+    # Add average rating for each book
+    for book in books:
+        cursor.execute("SELECT AVG(Rating) AS avg_rating FROM Review WHERE ISBN=%s", (book['ISBN'],))
+        avg = cursor.fetchone()['avg_rating']
+        book['avg_rating'] = round(avg, 1) if avg else None
+
+    # Get all unique genres for filtering dropdown
+    cursor.execute("SELECT DISTINCT Genre FROM Book")
+    genres = [row['Genre'] for row in cursor.fetchall() if row['Genre']]
+    
+    # Get all unique authors for filtering dropdown
+    cursor.execute("SELECT DISTINCT Author FROM Book")
+    authors = [row['Author'] for row in cursor.fetchall() if row['Author']]
+
+
+    connection.close()
+
+    return render_template(
+        "home.html",
+        books=books,
+        genres=genres,
+        authors=authors,   
+        genre_filter=genre_filter,
+)
 
 
 
@@ -354,6 +407,21 @@ def delete_review(review_id):
 
 
 
+@app.route("/about")
+@login_required
+def about():
+    return render_template(
+        "about.html",
+)
+
+@app.route("/contact", methods=["GET", "POST"])
+@login_required
+def contact():
+    if request.method == "POST":
+            flash("Feedback sent!", "success")
+    return render_template(
+        "contact.html",
+)
 
 
 # ----- Display Books -----

@@ -1,11 +1,26 @@
 <!DOCTYPE html>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>Edit Book – ShelfSpace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo3.png') }}">
 </head>
 <body>
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
 
     <div class="page-container">
 
@@ -13,18 +28,33 @@
         <div class="navbar">
             <div class="nav-left">
                 <a href="{{ url_for('home') }}">Home</a>
-                <a href="{{ url_for('books') }}">Books</a>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
+                <a class="navbar_active" href="{{ url_for('books') }}">Books</a>
+                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('contact') }}">Contact</a>
             </div>
-
             <div class="nav-center">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ShelfSpace logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" />
             </div>
-
             <div class="nav-right">
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('register') }}">Register</a>
+                <a href="{{ url_for('login') }}">Log In</a>
+                {% else %}
+                <p>Hello, {{ current_user.username }}!</p>
+                {% if current_user.role == 'customer' %}
+                <a href="{{ url_for('view_cart') }}" class="cart-link">
+                    <img src="{{ url_for('static', filename='images/cart-icon.png') }}" alt="Cart" class="cart-icon">
+                    {% if cart_count and cart_count > 0 %}
+                    <span class="cart-badge">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('view_wishlist') }}" class="wishlist-link">
+                    <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
+                </a>
+                {% endif %}
                 <a href="{{ url_for('accountdetails') }}">Account</a>
                 <a href="{{ url_for('logout') }}">Log Out</a>
+                {% endif %}
             </div>
         </div>
 
@@ -38,8 +68,8 @@
                 <!-- Book Cover -->
                 <div class="edit-image">
                     <img src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
-                        onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.png') }}';"
-                        alt="Cover for {{ book.Title }}">
+                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.png') }}';"
+                         alt="Cover for {{ book.Title }}">
                 </div>
 
                 <!-- Edit Box -->

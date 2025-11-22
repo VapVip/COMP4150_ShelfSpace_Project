@@ -1,17 +1,32 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 <html>
 <head>
     <title>ShelfSpace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo3.png') }}">
+    <style>
+        /* Quick inline styles for stars */
+        .stars {
+            color: gold;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
 
+        .filter-container {
+            margin: 20px 0;
+        }
+    </style>
+</head>
 <body>
     <div class="navbar">
         <div class="nav-left">
             <a class="navbar_active" href="{{ url_for('home') }}">Home</a>
             <a href="{{ url_for('books') }}">Books</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
         </div>
 
         <div class="nav-center">
@@ -20,22 +35,23 @@
 
         <div class="nav-right">
             {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('register') }}">Register</a>
-                <a href="{{ url_for('login') }}">Log In</a>
+            <a href="{{ url_for('register') }}">Register</a>
+            <a href="{{ url_for('login') }}">Log In</a>
             {% else %}
-                {% if current_user.role == 'customer' %}
-                    <a href="{{ url_for('view_cart') }}" class="cart-link">
-                        <img src="{{ url_for('static', filename='images/cart-icon.png') }}" alt="Cart" class="cart-icon">
-                        {% if cart_count and cart_count > 0 %}
-                            <span class="cart-badge">{{ cart_count }}</span>
-                        {% endif %}
-                    </a>
-                    <a href="{{ url_for('view_wishlist') }}" class="wishlist-link">
-                        <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
-                    </a>
+            <p>Hello, {{ current_user.username }}!</p>
+            {% if current_user.role == 'customer' %}
+            <a href="{{ url_for('view_cart') }}" class="cart-link">
+                <img src="{{ url_for('static', filename='images/cart-icon.png') }}" alt="Cart" class="cart-icon">
+                {% if cart_count and cart_count > 0 %}
+                <span class="cart-badge">{{ cart_count }}</span>
                 {% endif %}
-                <a href="{{ url_for('accountdetails') }}">Account</a>
-                <a href="{{ url_for('logout') }}">Log Out</a>
+            </a>
+            <a href="{{ url_for('view_wishlist') }}" class="wishlist-link">
+                <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
+            </a>
+            {% endif %}
+            <a href="{{ url_for('accountdetails') }}">Account</a>
+            <a href="{{ url_for('logout') }}">Log Out</a>
             {% endif %}
         </div>
     </div>
@@ -52,12 +68,280 @@
         {% endwith %}
     </div>
 
-    <p style="width: 15%; justify-self: center;">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed condimentum, eros nec pharetra ultricies, turpis sapien sodales lorem, non sollicitudin sem nisl vel dolor. Aenean nibh velit, vulputate in neque dictum, viverra lobortis augue. Pellentesque tempor, lacus ac fermentum convallis, est est tincidunt lacus, nec placerat ligula lorem eu nisi. Ut pretium risus ut sapien tincidunt dapibus in vitae mauris. Aliquam sit amet maximus massa. Sed consequat ullamcorper ipsum nec laoreet. Donec mattis eros maximus nisl aliquam molestie. Quisque ex dolor, pharetra non neque at, pretium iaculis sem. Etiam volutpat in turpis ut sagittis. Maecenas fermentum, nisi a aliquet fermentum, libero eros gravida nunc, sed convallis ligula dui et augue. Curabitur id dignissim neque. Fusce consequat facilisis ante, et facilisis massa ultricies nec. Nulla vel malesuada tortor. Etiam justo leo, viverra ac hendrerit non, ornare ac libero. Ut convallis fringilla varius. Aliquam finibus nunc id efficitur blandit.
-        Aenean rutrum, felis non tempor condimentum, augue ex dignissim metus, ut ullamcorper lorem nisi at elit. Suspendisse tristique, nisl et porttitor molestie, massa metus ultrices massa, at iaculis mi odio et ipsum. Nam pretium porta tempor. Phasellus lorem turpis, pulvinar sed placerat vitae, egestas sit amet mauris. Aliquam fringilla metus a ex finibus egestas. Cras tristique at magna sed dignissim. Pellentesque tristique accumsan elit. Aliquam gravida, mauris ut viverra ultricies, nunc justo euismod enim, egestas malesuada libero tortor quis nisl. Maecenas placerat, lacus eget condimentum ultricies, nisi ex lacinia ex, finibus vestibulum est metus vitae mi. Aliquam et justo malesuada, pharetra magna sed, mollis libero. Phasellus ac sapien non nunc semper blandit at in lectus. Phasellus quis ligula enim.
-        Quisque id faucibus odio. Suspendisse et volutpat est. Maecenas pellentesque, neque id accumsan sagittis, purus sapien suscipit ligula, sed pellentesque tellus nulla sit amet enim. Aliquam facilisis tincidunt ornare. Suspendisse a nunc auctor, commodo eros sed, sagittis dolor. Aenean ut tellus placerat, gravida felis in, mattis magna. Mauris convallis felis eros, id vestibulum nisl finibus non.
-        Vivamus imperdiet lectus dui, id laoreet orci semper a. Praesent et urna porttitor, auctor turpis nec, fermentum arcu. Proin molestie sapien a dui porttitor venenatis. Donec hendrerit nisl at magna mattis tristique. Cras commodo, ipsum id blandit sollicitudin, quam tellus elementum arcu, eget facilisis tellus dui eget ligula. Suspendisse semper dictum lacus, a bibendum nulla faucibus vel. Mauris tempor rutrum sapien nec volutpat. Nam placerat, massa placerat bibendum laoreet, est nisi dictum nisi, at scelerisque elit ante ut quam. Morbi in odio vel orci condimentum pellentesque. Curabitur non dictum nunc. Nam luctus quis libero et elementum. Aenean ut euismod libero, ac tincidunt sem.
-        Curabitur id nunc et arcu dapibus lacinia. Aenean mi nunc, posuere non sollicitudin quis, finibus vel dolor. Praesent ac ante tincidunt, imperdiet odio ut, tempor arcu. Ut mollis turpis ut odio dignissim feugiat sed eget velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla neque purus, molestie at turpis et, dignissim pellentesque augue. Curabitur id mauris sed sapien lobortis porttitor non a justo. Quisque non maximus nunc. Aliquam elementum.
-    </p>
+    <div class="home-search-container">
+        <h2 class="home-search-title">Find your next book</h2>
+        <form method="get" action="{{ url_for('books') }}">
+            <input class="home-search-box" type="text" name="search" placeholder="Search by title or author" value="{{ search_query }}">
+            <button class="home-search-button" type="submit">Search</button>
+        </form>
+    </div>
+
+    <!-- BOOK GRID -->
+    <div class="homepage-book-grid-container">
+        <h2>Fantasy</h2>
+        <ul class="homepage-book-grid">
+            {% for book in books if book.Genre == 'Fantasy' %}
+            <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
+                <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <img class="book-cover"
+                         src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
+                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
+                         alt="Cover for {{ book.Title }}">
+                    <h3>{{ book.Title }}</h3>
+                    <p>by {{ book.Author }}</p>
+                    <p>${{ book.Price }}</p>
+
+                    {% if book.avg_rating %}
+                    <div class="stars">
+                        {% for i in range(1, 6) %}
+                        {% if i <= book.avg_rating|round(0, 'floor') %}
+                        ★
+                        {% else %}
+                        ☆
+                        {% endif %}
+                        {% endfor %}
+                        ({{ book.avg_rating }})
+                    </div>
+                    {% else %}
+                    <div class="stars">
+                        No reviews yet
+                    </div>
+                    {% endif %}
+                </a>
+
+                <!-- Employee Actions -->
+                {% if current_user.role != 'customer' %}
+                <div class="book-actions">
+                    <!-- Edit stays a link because it’s GET -->
+                    <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
+                    <br>
+                    <!-- Delete uses POST form -->
+                    <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+
+                <!-- Customer Actions -->
+                {% else %}
+                <!-- Customer Actions -->
+                <div class="book-actions">
+                    <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Add to Cart</button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Wishlist</button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </li>
+            {% endfor %}
+            <a href="{{ url_for('books') }}"><img class="viewall" src="{{ url_for('static', filename='images/viewall.png') }}" /></a>
+        </ul>
+        <h2>Dystopian</h2>
+        <ul class="homepage-book-grid">
+            {% for book in books[:6] if book.Genre == 'Dystopian' %}
+            <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
+                <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <img class="book-cover"
+                         src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
+                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
+                         alt="Cover for {{ book.Title }}">
+                    <h3>{{ book.Title }}</h3>
+                    <p>by {{ book.Author }}</p>
+                    <p>${{ book.Price }}</p>
+
+                    {% if book.avg_rating %}
+                    <div class="stars">
+                        {% for i in range(1, 6) %}
+                        {% if i <= book.avg_rating|round(0, 'floor') %}
+                        ★
+                        {% else %}
+                        ☆
+                        {% endif %}
+                        {% endfor %}
+                        ({{ book.avg_rating }})
+                    </div>
+                    {% else %}
+                    <div class="stars">
+                        No reviews yet
+                    </div>
+                    {% endif %}
+                </a>
+
+                <!-- Employee Actions -->
+                {% if current_user.role != 'customer' %}
+                <div class="book-actions">
+                    <!-- Edit stays a link because it’s GET -->
+                    <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
+                    <br>
+                    <!-- Delete uses POST form -->
+                    <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+
+                <!-- Customer Actions -->
+                {% else %}
+                <!-- Customer Actions -->
+                <div class="book-actions">
+                    <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Add to Cart</button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Wishlist</button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </li>
+            {% endfor %}
+            <a href="{{ url_for('books') }}"><img class="viewall" src="{{ url_for('static', filename='images/viewall.png') }}" /></a>
+        </ul>
+        <h2>Young Adult</h2>
+        <ul class="homepage-book-grid">
+            {% for book in books if book.Genre == 'Young Adult' %}
+            <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
+                <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <img class="book-cover"
+                         src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
+                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
+                         alt="Cover for {{ book.Title }}">
+                    <h3>{{ book.Title }}</h3>
+                    <p>by {{ book.Author }}</p>
+                    <p>${{ book.Price }}</p>
+
+                    {% if book.avg_rating %}
+                    <div class="stars">
+                        {% for i in range(1, 6) %}
+                        {% if i <= book.avg_rating|round(0, 'floor') %}
+                        ★
+                        {% else %}
+                        ☆
+                        {% endif %}
+                        {% endfor %}
+                        ({{ book.avg_rating }})
+                    </div>
+                    {% else %}
+                    <div class="stars">
+                        No reviews yet
+                    </div>
+                    {% endif %}
+                </a>
+
+                <!-- Employee Actions -->
+                {% if current_user.role != 'customer' %}
+                <div class="book-actions">
+                    <!-- Edit stays a link because it’s GET -->
+                    <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
+                    <br>
+                    <!-- Delete uses POST form -->
+                    <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+
+                <!-- Customer Actions -->
+                {% else %}
+                <!-- Customer Actions -->
+                <div class="book-actions">
+                    <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Add to Cart</button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Wishlist</button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </li>
+            {% endfor %}
+            <a href="{{ url_for('books') }}"><img class="viewall" src="{{ url_for('static', filename='images/viewall.png') }}" /></a>
+        </ul>
+        <h2>Classic</h2>
+        <ul class="homepage-book-grid">
+            {% for book in books if book.Genre == 'Classic' %}
+            <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
+                <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <img class="book-cover"
+                         src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
+                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
+                         alt="Cover for {{ book.Title }}">
+                    <h3>{{ book.Title }}</h3>
+                    <p>by {{ book.Author }}</p>
+                    <p>${{ book.Price }}</p>
+
+                    {% if book.avg_rating %}
+                    <div class="stars">
+                        {% for i in range(1, 6) %}
+                        {% if i <= book.avg_rating|round(0, 'floor') %}
+                        ★
+                        {% else %}
+                        ☆
+                        {% endif %}
+                        {% endfor %}
+                        ({{ book.avg_rating }})
+                    </div>
+                    {% else %}
+                    <div class="stars">
+                        No reviews yet
+                    </div>
+                    {% endif %}
+                </a>
+
+                <!-- Employee Actions -->
+                {% if current_user.role != 'customer' %}
+                <div class="book-actions">
+                    <!-- Edit stays a link because it’s GET -->
+                    <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
+                    <br>
+                    <!-- Delete uses POST form -->
+                    <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+
+                <!-- Customer Actions -->
+                {% else %}
+                <!-- Customer Actions -->
+                <div class="book-actions">
+                    <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Add to Cart</button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Wishlist</button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </li>
+            {% endfor %}
+            <a href="{{ url_for('books') }}"><img class="viewall" src="{{ url_for('static', filename='images/viewall.png') }}" /></a>
+        </ul>
+    </div>
+
+    <script>
+        function filterBooks() {
+            const genre = document.getElementById('genre-filter').value;
+            const author = document.getElementById('author-filter').value;
+            const price = document.getElementById('price-filter').value;
+            const books = document.querySelectorAll('.book-card');
+
+            books.forEach(book => {
+                let show = true;
+
+                if (genre !== 'all' && book.dataset.genre !== genre) show = false;
+                if (author !== 'all' && book.dataset.author !== author) show = false;
+                if (price !== 'all' && parseFloat(book.dataset.price) > parseFloat(price)) show = false;
+
+                book.style.display = show ? 'block' : 'none';
+            });
+        }
+    </script>
+
 </body>
 </html>
