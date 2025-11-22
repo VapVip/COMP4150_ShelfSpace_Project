@@ -407,6 +407,26 @@ def delete_review(review_id):
 
 
 
+# ----- Employee Delete Review -----
+@app.route("/delete_review_employee/<int:review_id>/<isbn>", methods=["POST"])
+@login_required
+def delete_review_employee(review_id, isbn):
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="shelfspace"
+    )
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM Review WHERE ReviewID = %s", (review_id,))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    flash("Review deleted successfully!", "success")
+    return redirect(url_for('book_detail', isbn=isbn))
+
+
+
 @app.route("/about")
 @login_required
 def about():
@@ -518,6 +538,7 @@ def book_detail(isbn):
     # Get reviews + customer usernames
     cursor.execute("""
         SELECT 
+            r.ReviewID,
             r.ReviewText,
             r.Rating,
             c.Username,
@@ -727,7 +748,6 @@ def edit_book(isbn):
     cursor.close()
     connection.close()
     return render_template("edit_book.html", book=book)
-
 
 # ----- Employee Delete Book -----
 @app.route("/books/delete/<isbn>", methods=["POST"])

@@ -333,7 +333,11 @@ img {
     border-style: none;
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     color: white;
+    height: 35px;
+    padding-left: 5px;
+    padding-right: 5px;
     margin-top: 5px;
+    width: 170px;
 }
 
 .login-form {
