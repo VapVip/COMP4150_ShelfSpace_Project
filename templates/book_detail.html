@@ -79,7 +79,10 @@
                 <p><strong>Author:</strong> {{ book.Author }}</p>
                 <p><strong>Genre:</strong> {{ book.Genre }}</p>
                 <p><strong>Price:</strong> ${{ book.Price }}</p>
-                <p><strong>Stock:</strong> {{ book.Stock }}</p>
+                {% if current_user.role != 'customer' %}
+                    <p><strong>Stock:</strong> {{ book.StockQty }}</p>
+                {% endif %}
+
                 <p><strong>Description:</strong></p>
                 <p>{{ book.Description }}</p>
 
