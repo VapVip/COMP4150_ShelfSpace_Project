@@ -1,3 +1,4 @@
+/* main body style */
 body {
     padding-top: 70px;
     margin: 0;
@@ -13,18 +14,47 @@ body {
     background-size: auto, auto;
 }
 
-
 img {
     -webkit-user-drag: none;
     user-select: none;
 }
 
+
+
+/* scroll bar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(11, 10, 9, 0.60);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(43, 40, 38, 0.60);
+    backdrop-filter: blur(4px);
+    box-shadow: 0px 0px 5px rgba(49, 45, 43,0.5);
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(84, 78, 74, 0.60);
+        box-shadow: 0px 0px 5px rgba(84, 78, 74,1);
+    }
+
+
+
+/* about page */
 .about-text {
     padding-left: 35px;
     padding-right: 35px;
     font-size: 20px;
 }
 
+
+
+/* pop up messages */
 .flash-container {
     position: fixed;
     top: 70px;
@@ -58,10 +88,12 @@ img {
 }
 
     .flash.success {
-        background: #3c824d;
+        background-color: #d4edda;
+        color: #155724;
     }
     .flash.error {
-        background: #803333;
+        background-color: #f8d7da;
+        color: #721c24;
     }
 
 @keyframes fadeOut {
@@ -74,6 +106,9 @@ img {
     }
 }
 
+
+
+/* top nav bar */
 .navbar {
     background: rgba(31, 28, 26, 0.60);
     backdrop-filter: blur(5px);
@@ -127,6 +162,94 @@ img {
     background-color: #322e2a;
 }
 
+
+
+/* add book page */
+.button-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.upload-btn, .delete-cover-btn {
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.upload-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+}
+
+    .upload-btn:hover {
+        background: #0056b3;
+    }
+
+.delete-cover-btn {
+    background: #a30000;
+    color: white;
+    border: none;
+}
+
+    .delete-cover-btn:hover {
+        background: #cc0000;
+    }
+
+.cover-preview {
+    width: 220px;
+    height: 300px;
+    object-fit: contain;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin-top: 10px;
+    background: white;
+}
+
+.edit-form input,
+.edit-form textarea {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: inherit;
+    background-color: #f5f5f5;
+}
+
+.edit-form textarea {
+    resize: vertical;
+}
+
+.edit-form label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.edit-btn {
+    margin-top: 10px;
+    padding: 10px 18px;
+    font-size: 1rem;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+    .edit-btn:hover {
+        background: #218838;
+    }
+
+
+
+/* home page */
 .home-search-title {
     font-size: 28px;
     margin-bottom: 15px;
@@ -143,14 +266,56 @@ img {
 
     .home-search-container form {
         display: flex;
-        flex-direction: column; /* stack vertically */
-        align-items: center; /* center children */
+        flex-direction: column;
+        align-items: center;
+    }
+
+.home-search-box {
+    width: 600px; 
+    padding: 18px 18px;
+    border-radius: 55px; 
+    border: 0px solid #555; 
+    background-color: rgba(27, 24, 22, 1); 
+    color: #fff; 
+    font-size: 20px;
+    outline: none;
+    transition: 0.2s ease;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+    .home-search-box:focus, .home-search-box:hover {
+        width: 620px; 
+        transition: 0.2s ease;
+        background-color: rgba(56, 52, 47, 1); 
+        box-shadow: 0px 0px 25px rgba(56, 52, 47, 1);
+    }
+
+.home-search-button {
+    width: 100px; 
+    padding: 12px 16px;
+    border-radius: 25px; 
+    border: 0px solid #555; 
+    background-color: rgba(27, 24, 22, 1); 
+    color: #fff; 
+    font-size: 16px;
+    outline: none;
+    transition: 0.2s ease;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.4);
+    margin-top: 20px;
+}
+
+    .home-search-button:focus, .home-search-button:hover {
+        transition: 0.2s ease;
+        background-color: rgba(56, 52, 47, 1); 
+        box-shadow: 0px 0px 25px rgba(56, 52, 47, 1);
     }
 
 
+
+/* homepage book list */
 .homepage-book-grid-container {
     display: flex;
-    flex-direction: column; /* <-- vertical stacking */
+    flex-direction: column;
     gap: 15px;
     width: 80%;
     margin: 0 auto;
@@ -166,6 +331,9 @@ img {
     margin-bottom: 120px;
 }
 
+
+
+/* view all button on homepage */
 .viewall {
     height: 120px;
     margin-top: 200px;
@@ -186,52 +354,79 @@ img {
         transition: 0.1s;
     }
 
-.home-search-box {
-    width: 600px; /* bigger input */
-    padding: 18px 18px;
-    border-radius: 55px; /* rounded corners */
-    border: 0px solid #555; /* subtle border */
-    background-color: rgba(27, 24, 22, 1); /* matches dark theme */
-    color: #fff; /* white text */
-    font-size: 20px;
-    outline: none;
-    transition: 0.2s ease;
-    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.4);
-}
-    .home-search-box:focus, .home-search-box:hover {
-        width: 620px; /* bigger input */
-        transition: 0.2s ease;
-        background-color: rgba(56, 52, 47, 1); /* matches dark theme */
-        box-shadow: 0px 0px 25px rgba(56, 52, 47, 1);
-    }
 
-.home-search-button {
-    width: 100px; /* bigger input */
-    padding: 12px 16px;
-    border-radius: 25px; /* rounded corners */
-    border: 0px solid #555; /* subtle border */
-    background-color: rgba(27, 24, 22, 1); /* matches dark theme */
-    color: #fff; /* white text */
-    font-size: 16px;
-    outline: none;
-    transition: 0.2s ease;
-    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.4);
-    margin-top: 20px;
-}
 
-    .home-search-button:focus, .home-search-button:hover {
-        transition: 0.2s ease;
-        background-color: rgba(56, 52, 47, 1); /* matches dark theme */
-        box-shadow: 0px 0px 25px rgba(56, 52, 47, 1);
-    }
-
+/* log in page */
 .login-image img {
     padding-left: 50px;
     width: 200px;
     height: auto;
 }
 
+.login-form {
+    margin-left: auto;
+    text-align: left;
+}
 
+.login {
+    display: flex;
+    width: 40%;
+    position: relative;
+    top: 25px;
+    padding-top: 55px;
+    padding-bottom: 55px;
+    padding-right: 55px;
+    border-radius: 25px;
+    background-color: #1b1816;
+    justify-self: center;
+    overflow: hidden;
+    box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.6);
+    margin-bottom: 220px;
+}
+
+    .login button {
+        padding: 10px 22px;
+        background: rgba(43, 40, 38, 0.60);
+        border: none;
+        border-radius: 10px;
+        color: #eee;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+        .login button:hover {
+            background-color: #383431;
+            box-shadow: 0px 0px 5px rgba(84, 78, 74,1);
+        }
+
+        .login button:active {
+            background-color: #867b74;
+            box-shadow: 0px 0px 9px rgba(134, 123, 116,1);
+        }
+
+    .login input {
+        color: white;
+        background-color: rgba(43, 40, 38, 0.60);
+        border-radius: 8px;
+        border-style: none;
+        height: 25px;
+        padding: 5px;
+        margin-top: 5px;
+        transition: 0.3s;
+        width: 280px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+        .login input:hover {
+            background-color: #383431;
+            box-shadow: 0px 0px 5px rgba(84, 78, 74,1);
+        }
+
+
+
+/* register page */
 .register-image img {
     padding-left: 50px;
     width: 200px;
@@ -239,6 +434,9 @@ img {
     padding-top: 25px;
 }
 
+
+
+/* account details */
 .details {
     display: flex;
     flex-direction: column;
@@ -340,97 +538,9 @@ img {
     width: 170px;
 }
 
-.login-form {
-    margin-left: auto;
-    text-align: left;
-}
-
-.login {
-    display: flex;
-    width: 40%;
-    position: relative;
-    top: 25px;
-    padding-top: 55px;
-    padding-bottom: 55px;
-    padding-right: 55px;
-    border-radius: 25px;
-    background-color: #1b1816;
-    justify-self: center;
-    overflow: hidden;
-    box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.6);
-    margin-bottom: 220px;
-}
-
-    .login button {
-        padding: 10px 22px;
-        background: rgba(43, 40, 38, 0.60);
-        border: none;
-        border-radius: 10px;
-        color: #eee;
-        font-weight: 500;
-        cursor: pointer;
-        transition: 0.2s ease;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
-
-    .login button:hover {
-        background-color: #383431;
-        box-shadow: 0px 0px 5px rgba(84, 78, 74,1);
-    }
-
-    .login button:active {
-        background-color: #867b74;
-        box-shadow: 0px 0px 9px rgba(134, 123, 116,1);
-    }
-
-    .login input {
-        color: white;
-        background-color: rgba(43, 40, 38, 0.60);
-        border-radius: 8px;
-        border-style: none;
-        height: 25px;
-        padding: 5px;
-        margin-top: 5px;
-        transition: 0.3s;
-        width: 280px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
-
-    .login input:hover {
-        background-color: #383431;
-        box-shadow: 0px 0px 5px rgba(84, 78, 74,1);
-    }
-
-::-webkit-scrollbar {
-    width: 12px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(11, 10, 9, 0.60);
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(43, 40, 38, 0.60);
-    backdrop-filter: blur(4px);
-    box-shadow: 0px 0px 5px rgba(49, 45, 43,0.5);
-}
-
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(84, 78, 74, 0.60);
-        box-shadow: 0px 0px 5px rgba(84, 78, 74,1);
-    }
 
 
-
-
-
-
-
-
-/* books.html style */
-
+/* books page */
 .page-container {
     width: 80%;
     margin: 40px auto;
@@ -526,54 +636,6 @@ img {
     font-size: 16px;
 }
 
-/* Existing book-actions container */
-.book-actions a,
-.book-actions button {
-    text-decoration: none;
-    color: black; /* default color */
-    background: none; /* buttons look like links */
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    padding: 0;
-}
-
-/* Hover effect */
-.book-actions a:hover,
-.book-actions button:hover {
-    color: rgb(0, 119, 255);
-}
-
-
-.search-container {
-    margin: 15px 0;
-}
-.search-container input[type="text"] {
-    padding: 5px;
-    width: 200px;
-}
-.search-container button {
-    padding: 5px 10px;
-}
-
-.flash-messages {
-    margin: 15px 0;
-}
-.flash {
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-.flash.success {
-    background-color: #d4edda;
-    color: #155724;
-}
-.flash.error {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-/* For Add Book Button */
 .add-book-btn {
     display: inline-block;
     background-color: #4caf50;
@@ -585,17 +647,46 @@ img {
     transition: 0.2s ease;
 }
 
-.add-book-btn:hover {
-    background-color: #45a049;
+    .add-book-btn:hover {
+        background-color: #45a049;
+    }
+
+
+
+/* book card actions */
+.book-actions a,
+.book-actions button {
+    text-decoration: none;
+    color: black; 
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+}
+
+.book-actions a:hover,
+.book-actions button:hover {
+    color: rgb(0, 119, 255);
 }
 
 
 
+/* books page search bar */
+.search-container {
+    margin: 15px 0;
+}
+.search-container input[type="text"] {
+    padding: 5px;
+    width: 200px;
+}
+.search-container button {
+    padding: 5px 10px;
+}
 
 
 
-
-/* Style for cart.html */
+/* cart page */
 .cart-table {
     width: 100%;
     border-collapse: collapse;
@@ -655,7 +746,7 @@ img {
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #f9f9f9;
-    pointer-events: none; /* prevent manual typing, only + / - buttons allowed */
+    pointer-events: none;
 }
 
 .remove-button {
@@ -698,7 +789,6 @@ img {
     background-color: #45a049;
 }
 
-
 .cart-table img.book-cover {
     width: 60px;
     height: auto;
@@ -721,17 +811,13 @@ img {
     background-color: #f9f9f9;
 }
 
-
-
-
-/* Cart Icon Styling */
 .cart-link {
     position: relative;
     display: inline-block;
 }
 
 .cart-icon {
-    width: 26px; /* adjust size */
+    width: 26px;
     height: 26px;
     vertical-align: middle;
 }
@@ -749,13 +835,14 @@ img {
 }
 
 
-/* Wishlist Icon Styling */
+
+/* wishlist page */
 .wishlist-link {
     display: inline-block;
 }
 
 .wishlist-icon {
-    width: 30px; /* adjust size */
+    width: 30px;
     height: 30px;
     vertical-align: middle;
 }
@@ -764,15 +851,14 @@ img {
 
 
 
-/* Edit Book Page Styling */
+/* edit book page */
 .edit-page {
     width: 90%;
     max-width: 1100px;
-    margin: 50px auto 50px; /* leaves space for fixed navbar */
+    margin: 50px auto 50px;
     color: white;
 }
 
-/* Layout wrapper: image left, form right */
 .edit-wrapper {
     display: grid;
     grid-template-columns: 360px 1fr;
@@ -785,9 +871,6 @@ img {
     margin-top: 10px;
 }
 
-
-
-/* Book cover area */
 .edit-image {
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
     padding: 18px;
@@ -801,12 +884,11 @@ img {
     width: 100%;
     height: auto;
     max-height: 520px;
-    object-fit: contain; /* prevents cropping */
+    object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.5);
 }
 
-/* Edit form box */
 .edit-box {
     padding: 18px 8px;
 }
@@ -817,7 +899,6 @@ img {
     color: #fff;
 }
 
-/* form inputs */
 .edit-form {
     display: flex;
     flex-direction: column;
@@ -847,7 +928,6 @@ img {
     background: rgba(43, 40, 38, 0.75);
 }
 
-/* actions row */
 .edit-form-actions {
     display: flex;
     gap: 16px;
@@ -855,7 +935,6 @@ img {
     margin-top: 12px;
 }
 
-/* Save button */
 .edit-btn {
     padding: 10px 18px;
     background: #4CAF50;
@@ -872,7 +951,6 @@ img {
     background-color: #45a049;
 }
 
-/* cancel/back link */
 .cancel-link {
     color: #fff;
     text-decoration: none;
@@ -886,9 +964,6 @@ img {
     background: rgba(255,255,255,0.05);
 }
 
-
-
-/* Top-right Back button */
 .back-top {
     position: absolute;
     top: 20px;
@@ -906,7 +981,6 @@ img {
     background: rgba(255,255,255,0.20);
 }
 
-/* Edit form sizing */
 .edit-form input[type="text"],
 .edit-form input[type="number"] {
     width: 70%; 
@@ -922,12 +996,11 @@ img {
     cursor: pointer;
 }
 
-/* Back button under navbar, top-left */
 .back-top-left {
     position: relative;
     display: inline-block;
-    margin-top: 6px;      /* space below navbar */
-    margin-left: 10px;     /* slight inward padding */
+    margin-top: 6px;      
+    margin-left: 10px;     
     margin-bottom: 20px;
     color: white;
     text-decoration: none;
@@ -938,12 +1011,13 @@ img {
     transition: background 0.15s ease;
 }
 
-
 .back-top-left:hover {
     background: rgba(255,255,255,0.20);
 }
 
 
+
+/* review buttons and box styling */
 .review-btn {
     padding: 10px 18px;
     background: #BC9F8B; 
@@ -962,7 +1036,6 @@ img {
     box-shadow: 0 8px 18px rgba(245,166,35,0.25);
     color: #3d6fa8;
 }
-
 
 .quantity-box {
     display: flex;
@@ -994,14 +1067,11 @@ img {
 
 
 
-
-
-
-/* Add Review Page Styling */
+/* review page */
 .star-rating {
     display: flex;
-    justify-content: center; /* center the stars */
-    flex-direction: row-reverse; /* reverse order for correct hover logic */
+    justify-content: center; 
+    flex-direction: row-reverse; 
     font-size: 2rem;
 }
 
@@ -1015,27 +1085,23 @@ img {
     margin: 0 5px;
 }
 
-/* Hover effect: fill this star and all previous stars */
 .star-rating label:hover,
 .star-rating label:hover ~ label {
     color: gold;
 }
 
-/* Checked stars */
 .star-rating input:checked ~ label {
     color: gold;
 }
 
-/* Review textarea adjustments */
 textarea#review_text {
-    width: 95%;      /* slightly smaller width */
+    width: 95%;      
     min-height: 200px;
     padding: 10px;
     font-size: 1rem;
     resize: vertical;
 }
 
-/* Optional: spacing between rating and textarea */
 .review-form label {
     display: block;
     margin-top: 15px;
@@ -1065,14 +1131,11 @@ textarea#review_text {
 
 
 
-
-
-
-/* ---- Book Detail Page and Checkout ---- */
+/* book details page */
 .book-detail-page {
     width: 90%;
     max-width: 1000px;
-    margin: 80px auto 80px; /* reduce from 110px → 80px */
+    margin: 80px auto 80px;
     color: white;
 }
 
@@ -1089,10 +1152,10 @@ textarea#review_text {
 }
 
 .book-detail-wrapper .book-cover {
-    width: 100%;          /* full width removes side gaps */
+    width: 100%;          
     height: auto;
     max-height: 400px;  
-    object-fit: contain;  /* prevents cropping */
+    object-fit: contain; 
     display: block;
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.5);
@@ -1132,12 +1195,10 @@ textarea#review_text {
     transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-
 .book-actions button:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(245,166,35,0.18);
 }
-
 
 .book-actions-vertical {
     display: flex;
@@ -1148,7 +1209,7 @@ textarea#review_text {
 
 .book-actions-vertical button {
     display: block;
-    width: 120px;      /* same width for all */
+    width: 120px;     
     padding: 10px 16px;
     border-radius: 8px;
     border: none;
@@ -1168,11 +1229,7 @@ textarea#review_text {
 
 
 
-
-
-
-/* Write and Add Review Page Styling */
-
+/* add review page */
 .reviews {
     margin-top: 30px;
 }
@@ -1212,16 +1269,9 @@ textarea#review_text {
 
 
 
-
-
-
-
-
-
-
-/* Account Details Reviews Page Styling */
+/* account details review section */
 .user-reviews {
-    margin-top: 10px;          /* reduced gap from account form */
+    margin-top: 10px;        
     padding: 15px;
     border-top: 1px solid #BC9F8B;
 }
@@ -1240,7 +1290,7 @@ textarea#review_text {
 
 .review-item {
     display: flex;
-    flex-direction: column;   /* main column: content + buttons */
+    flex-direction: column; 
     background: #fff7f0;
     padding: 12px 15px;
     border-radius: 6px;
@@ -1254,7 +1304,7 @@ textarea#review_text {
 }
 
 .review-header {
-    display: flex;            /* left-right columns */
+    display: flex;           
     gap: 15px;
 }
 
@@ -1266,7 +1316,7 @@ textarea#review_text {
 
 .review-info {
     display: flex;
-    flex-direction: column;   /* stack all text */
+    flex-direction: column;  
     gap: 4px;
 }
 
@@ -1286,7 +1336,7 @@ textarea#review_text {
     display: flex;
     gap: 8px;
     margin-top: 5px;
-    justify-content: center; /* center buttons horizontally */
+    justify-content: center; 
 }
 
 .review-actions button {
@@ -1314,16 +1364,15 @@ textarea#review_text {
 }
 
 .review-link {
-    text-decoration: none;      /* remove underline */
-    color: inherit;             /* keep text colors the same */
-    display: block;             /* makes the whole card clickable */
+    text-decoration: none;    
+    color: inherit;            
+    display: block;            
 }
 
 .review-link .review-item {
     cursor: pointer;
 }
 
-/* Prevent stretched image / layout issues caused by anchor */
 .review-link img {
     display: block;
 }
@@ -1349,3 +1398,14 @@ textarea#review_text {
 }
 
 
+
+/* css for review stars */
+.stars {
+    color: gold;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.filter-container {
+    margin: 20px 0;
+}

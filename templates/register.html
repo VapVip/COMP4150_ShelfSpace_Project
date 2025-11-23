@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -10,6 +11,7 @@
 </head>
 
 <body>
+    <!-- top navbar -->
     <div class="navbar">
         <div class="nav-left">
             <a href="{{ url_for('home') }}">Home</a>
@@ -32,6 +34,7 @@
         </div>
     </div>
 
+    <!-- flash message pop ups -->
     <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -44,22 +47,29 @@
         {% endwith %}
     </div>
 
+    <!-- main page content -->
     <h1 style="font-weight:bold; justify-self:center; padding-top: 50px;">Register a New Account</h1>
-
     <div class="login">
         <div class="register-image">
             <img src="{{ url_for('static', filename='images/logo3.png') }}" />
         </div>
+
+        <!-- register form -->
         <form method="POST" class="login-form">
+
+            <!-- username -->
             <label>Username:</label><br>
             <input type="text" name="username"><br><br>
 
+            <!-- email -->
             <label>Email:</label><br>
             <input type="text" name="email"><br><br>
 
+            <!-- password -->
             <label>Password:</label><br>
             <input type="password" name="password"><br><br>
 
+            <!-- register button -->
             <button type="submit">Create Account</button>
         </form>
     </div>

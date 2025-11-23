@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -6,18 +7,9 @@
 <head>
     <title>My Wishlist – ShelfSpace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        /* Quick inline styles for stars */
-        .stars {
-            color: gold;
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-    </style>
 </head>
 <body>
-
-    <!-- NAVBAR -->
+    <!-- top navbar -->
     <div class="navbar">
         <div class="nav-left">
             <a href="{{ url_for('home') }}">Home</a>
@@ -51,11 +43,8 @@
         </div>
     </div>
 
-    <!-- PAGE CONTENT -->
-    <div class="page-container">
-        <h1>My Wishlist</h1>
-
-        <!-- Flash Messages -->
+    <!-- flash message pop ups -->
+    <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div class="flash-messages">
@@ -65,11 +54,19 @@
         </div>
         {% endif %}
         {% endwith %}
+    </div>
 
+    <!-- main page content -->
+    <div class="page-container">
+        <h1>My Wishlist</h1>
+
+        <!-- wishlist grid -->
         {% if books %}
         <ul class="book-grid">
             {% for book in books %}
             <li class="book-card">
+
+                <!-- book cover and details -->
                 <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
                     <img class="book-cover"
                          src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
@@ -79,6 +76,7 @@
                     <p>by {{ book.Author }}</p>
                     <p>${{ book.Price }}</p>
 
+                    <!-- book rating -->
                     {% if book.avg_rating %}
                     <div class="stars">
                         {% for i in range(1, 6) %}
@@ -97,11 +95,15 @@
                     {% endif %}
                 </a>
 
-                <!-- Customer Actions -->
+                <!-- non-employee actions -->
                 <div class="book-actions-vertical">
+
+                    <!-- add to car button -->
                     <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Add to Cart</button>
                     </form>
+
+                    <!-- remove from wishlist button -->
                     <form method="POST" action="{{ url_for('remove_from_wishlist', isbn=book.ISBN) }}">
                         <button type="submit">Remove</button>
                     </form>
@@ -111,10 +113,11 @@
             {% endfor %}
         </ul>
         {% else %}
+
+        <!-- wishlist empty message -->
         <p>Your wishlist is empty.</p>
         {% endif %}
     </div>
-
 </body>
 </html>
 

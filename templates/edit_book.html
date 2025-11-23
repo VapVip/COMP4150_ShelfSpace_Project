@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -11,21 +12,8 @@
 </head>
 
 <body>
-    <div class="flash-container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="flash-messages">
-            {% for category, message in messages %}
-            <div class="flash {{ category }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% endwith %}
-    </div>
-
     <div class="page-container">
-
-        <!-- NAVBAR -->
+        <!-- top navbar -->
         <div class="navbar">
             <div class="nav-left">
                 <a href="{{ url_for('home') }}">Home</a>
@@ -59,55 +47,68 @@
             </div>
         </div>
 
-        <!-- TOP-LEFT BACK BUTTON -->
+        <!-- flash message pop ups -->
+        <div class="flash-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- main page content -->
         <a href="{{ url_for('books') }}" class="back-top-left">← Back to Book List</a>
-
         <main class="edit-page">
-
             <div class="edit-wrapper">
 
-                <!-- Book Cover -->
+                <!-- book cover -->
                 <div class="edit-image">
                     <img src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
                          onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.png') }}';"
                          alt="Cover for {{ book.Title }}">
                 </div>
 
-                <!-- Edit Box -->
+                <!-- edit box -->
                 <div class="edit-box">
                     <h2>Edit Book</h2>
 
                     <form method="POST" class="edit-form">
 
+                        <!-- title -->
                         <label for="title">Title</label>
                         <input type="text" id="title" name="title"
                                value="{{ book.Title }}" required>
 
+                        <!-- author -->
                         <label for="author">Author</label>
                         <input type="text" id="author" name="author"
                                value="{{ book.Author }}" required>
 
+                        <!-- genre -->
                         <label for="genre">Genre</label>
                         <input type="text" id="genre" name="genre"
                                value="{{ book.Genre }}" required>
 
+                        <!-- quantity -->
                         <label for="stockqty">Stock Quantity</label>
                         <input type="number" id="stockqty" name="stockqty"
-                            value="{{ book.StockQty }}" min="0" required>
+                               value="{{ book.StockQty }}" min="0" required>
 
+                        <!-- price -->
                         <label for="price">Price ($)</label>
                         <input type="number" id="price" name="price"
                                step="0.01" value="{{ book.Price }}" required>
 
+                        <!-- save button -->
                         <button type="submit" class="edit-btn">Save Changes</button>
                     </form>
                 </div>
-
             </div>
-
         </main>
-
     </div>
-
 </body>
 </html>

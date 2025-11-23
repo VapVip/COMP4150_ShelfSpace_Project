@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -9,6 +10,7 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo3.png') }}">
 </head>
 <body>
+    <!-- top navbar -->
     <div class="navbar">
         <div class="nav-left">
             <a href="{{ url_for('home') }}">Home</a>
@@ -44,6 +46,7 @@
         </div>
     </div>
 
+    <!-- flash message pop ups -->
     <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -56,9 +59,11 @@
         {% endwith %}
     </div>
 
+    <!-- main page content -->
     <div class="page-container">
         <h1>My Cart</h1>
 
+        <!-- main cart grid -->
         {% if cart_items %}
         {% set ns = namespace(total=0) %}
         <table class="cart-table">
@@ -73,10 +78,14 @@
                 </tr>
             </thead>
             <tbody>
+
+                <!-- populate cart -->
                 {% for item in cart_items %}
                 {% set item_total = item.Price * item.Quantity %}
                 {% set ns.total = ns.total + item_total %}
                 <tr>
+
+                    <!-- book cover and details -->
                     <td class="book-info">
                         <img src="{{ url_for('static', filename='book_covers/' ~ item.ISBN ~ '.jpg') }}"
                              class="cart-book-cover"
@@ -86,6 +95,8 @@
                     </td>
                     <td>{{ item.Author }}</td>
                     <td>${{ item.Price }}</td>
+
+                    <!-- quantity -->
                     <td>
                         <form method="POST" action="{{ url_for('update_cart', isbn=item.ISBN) }}">
                             <div class="quantity-control">
@@ -95,7 +106,11 @@
                             </div>
                         </form>
                     </td>
+
+                    <!-- price -->
                     <td>${{ item_total|round(2) }}</td>
+
+                    <!-- remove from cart -->
                     <td>
                         <form method="POST" action="{{ url_for('remove_from_cart', isbn=item.ISBN) }}">
                             <button type="submit" class="remove-button">Remove</button>
@@ -106,19 +121,20 @@
             </tbody>
         </table>
 
+        <!-- cart total -->
         <div class="cart-summary">
             <strong>Grand Total: ${{ ns.total|round(2) }}</strong>
         </div>
 
+        <!-- checkout button (non functional) -->
         <div class="cart-actions">
             <button onclick="window.location.href='{{ url_for('books') }}'">Continue Shopping</button>
-            <!-- You can link to checkout later -->
         </div>
 
+        <!-- empty cart message -->
         {% else %}
         <p>Your cart is empty.</p>
         {% endif %}
     </div>
-
 </body>
 </html>

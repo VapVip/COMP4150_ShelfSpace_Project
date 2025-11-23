@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -7,20 +8,9 @@
     <title>ShelfSpace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo3.png') }}">
-    <style>
-        /* Quick inline styles for stars */
-        .stars {
-            color: gold;
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .filter-container {
-            margin: 20px 0;
-        }
-    </style>
 </head>
 <body>
+    <!-- top navbar -->
     <div class="navbar">
         <div class="nav-left">
             <a class="navbar_active" href="{{ url_for('home') }}">Home</a>
@@ -56,6 +46,7 @@
         </div>
     </div>
 
+    <!-- flash message pop ups -->
     <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -68,6 +59,7 @@
         {% endwith %}
     </div>
 
+    <!-- main page content -->
     <div class="home-search-container">
         <h2 class="home-search-title">Find your next book</h2>
         <form method="get" action="{{ url_for('books') }}">
@@ -76,21 +68,25 @@
         </form>
     </div>
 
-    <!-- BOOK GRID -->
+    <!-- book grid -->
     <div class="homepage-book-grid-container">
+
+        <!-- fantasy books-->
         <h2>Fantasy</h2>
         <ul class="homepage-book-grid">
             {% for book in books if book.Genre == 'Fantasy' %}
             <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
                 <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <!-- book cover-->
                     <img class="book-cover"
                          src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
                          onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
                          alt="Cover for {{ book.Title }}">
+                    <!-- book details -->
                     <h3>{{ book.Title }}</h3>
                     <p>by {{ book.Author }}</p>
                     <p>${{ book.Price }}</p>
-
+                    <!-- book ratings -->
                     {% if book.avg_rating %}
                     <div class="stars">
                         {% for i in range(1, 6) %}
@@ -109,52 +105,53 @@
                     {% endif %}
                 </a>
 
-                <!-- Employee Actions -->
+                <!-- employee actions -->
                 {% if current_user.role != 'customer' %}
                 <div class="book-actions">
-                    <!-- Edit as a button (GET request using a form) -->
+                    <!-- edit button -->
                     <form method="get" action="{{ url_for('edit_book', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Edit</button>
                     </form>
-
-                    <!-- Delete as a POST button -->
+                    <!-- delete button -->
                     <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Delete</button>
                     </form>
                 </div>
 
-
-                <!-- Customer Actions -->
+                <!-- non-employee actions -->
                 {% else %}
-                <!-- Customer Actions -->
                 <div class="book-actions">
+                    <!-- add to cart button -->
                     <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Add to Cart</button>
                     </form>
-
+                    <!-- add to wishlist button -->
                     <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Wishlist</button>
                     </form>
                 </div>
                 {% endif %}
-
             </li>
             {% endfor %}
             <a href="{{ url_for('books') }}"><img class="viewall" src="{{ url_for('static', filename='images/viewall.png') }}" /></a>
         </ul>
+
+        <!-- dystopian books-->
         <h2>Dystopian</h2>
         <ul class="homepage-book-grid">
-            {% for book in books[:6] if book.Genre == 'Dystopian' %}
+            {% for book in books if book.Genre == 'Dystopian' %}
             <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
                 <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <!-- book cover-->
                     <img class="book-cover"
                          src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
                          onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
                          alt="Cover for {{ book.Title }}">
+                    <!-- book details -->
                     <h3>{{ book.Title }}</h3>
                     <p>by {{ book.Author }}</p>
                     <p>${{ book.Price }}</p>
-
+                    <!-- book ratings -->
                     {% if book.avg_rating %}
                     <div class="stars">
                         {% for i in range(1, 6) %}
@@ -173,49 +170,53 @@
                     {% endif %}
                 </a>
 
-                <!-- Employee Actions -->
+                <!-- employee actions -->
                 {% if current_user.role != 'customer' %}
                 <div class="book-actions">
-                    <!-- Edit stays a link because it’s GET -->
-                    <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
-                    <br>
-                    <!-- Delete uses POST form -->
+                    <!-- edit button -->
+                    <form method="get" action="{{ url_for('edit_book', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Edit</button>
+                    </form>
+                    <!-- delete button -->
                     <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Delete</button>
                     </form>
                 </div>
 
-                <!-- Customer Actions -->
+                <!-- non-employee actions -->
                 {% else %}
-                <!-- Customer Actions -->
                 <div class="book-actions">
+                    <!-- add to cart button -->
                     <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Add to Cart</button>
                     </form>
-
+                    <!-- add to wishlist button -->
                     <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Wishlist</button>
                     </form>
                 </div>
                 {% endif %}
-
             </li>
             {% endfor %}
             <a href="{{ url_for('books') }}"><img class="viewall" src="{{ url_for('static', filename='images/viewall.png') }}" /></a>
         </ul>
+
+        <!-- young adult books-->
         <h2>Young Adult</h2>
         <ul class="homepage-book-grid">
             {% for book in books if book.Genre == 'Young Adult' %}
             <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
                 <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <!-- book cover-->
                     <img class="book-cover"
                          src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
                          onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
                          alt="Cover for {{ book.Title }}">
+                    <!-- book details -->
                     <h3>{{ book.Title }}</h3>
                     <p>by {{ book.Author }}</p>
                     <p>${{ book.Price }}</p>
-
+                    <!-- book ratings -->
                     {% if book.avg_rating %}
                     <div class="stars">
                         {% for i in range(1, 6) %}
@@ -234,49 +235,53 @@
                     {% endif %}
                 </a>
 
-                <!-- Employee Actions -->
+                <!-- employee actions -->
                 {% if current_user.role != 'customer' %}
                 <div class="book-actions">
-                    <!-- Edit stays a link because it’s GET -->
-                    <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
-                    <br>
-                    <!-- Delete uses POST form -->
+                    <!-- edit button -->
+                    <form method="get" action="{{ url_for('edit_book', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Edit</button>
+                    </form>
+                    <!-- delete button -->
                     <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Delete</button>
                     </form>
                 </div>
 
-                <!-- Customer Actions -->
+                <!-- non-employee actions -->
                 {% else %}
-                <!-- Customer Actions -->
                 <div class="book-actions">
+                    <!-- add to cart button -->
                     <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Add to Cart</button>
                     </form>
-
+                    <!-- add to wishlist button -->
                     <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Wishlist</button>
                     </form>
                 </div>
                 {% endif %}
-
             </li>
             {% endfor %}
             <a href="{{ url_for('books') }}"><img class="viewall" src="{{ url_for('static', filename='images/viewall.png') }}" /></a>
         </ul>
+
+        <!-- classic books-->
         <h2>Classic</h2>
         <ul class="homepage-book-grid">
             {% for book in books if book.Genre == 'Classic' %}
             <li class="book-card" data-genre="{{ book.Genre }}" data-author="{{ book.Author }}" data-price="{{ book.Price }}">
                 <a href="{{ url_for('book_detail', isbn=book.ISBN) }}">
+                    <!-- book cover-->
                     <img class="book-cover"
                          src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
                          onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
                          alt="Cover for {{ book.Title }}">
+                    <!-- book details -->
                     <h3>{{ book.Title }}</h3>
                     <p>by {{ book.Author }}</p>
                     <p>${{ book.Price }}</p>
-
+                    <!-- book ratings -->
                     {% if book.avg_rating %}
                     <div class="stars">
                         {% for i in range(1, 6) %}
@@ -295,38 +300,39 @@
                     {% endif %}
                 </a>
 
-                <!-- Employee Actions -->
+                <!-- employee actions -->
                 {% if current_user.role != 'customer' %}
                 <div class="book-actions">
-                    <!-- Edit stays a link because it’s GET -->
-                    <a href="{{ url_for('edit_book', isbn=book.ISBN) }}">Edit</a>
-                    <br>
-                    <!-- Delete uses POST form -->
+                    <!-- edit button -->
+                    <form method="get" action="{{ url_for('edit_book', isbn=book.ISBN) }}" style="display:inline;">
+                        <button type="submit">Edit</button>
+                    </form>
+                    <!-- delete button -->
                     <form method="post" action="{{ url_for('delete_book', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Delete</button>
                     </form>
                 </div>
 
-                <!-- Customer Actions -->
+                <!-- non-employee actions -->
                 {% else %}
-                <!-- Customer Actions -->
                 <div class="book-actions">
+                    <!-- add to cart button -->
                     <form method="POST" action="{{ url_for('add_to_cart', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Add to Cart</button>
                     </form>
-
+                    <!-- add to wishlist button -->
                     <form method="POST" action="{{ url_for('add_to_wishlist', isbn=book.ISBN) }}" style="display:inline;">
                         <button type="submit">Wishlist</button>
                     </form>
                 </div>
                 {% endif %}
-
             </li>
             {% endfor %}
             <a href="{{ url_for('books') }}"><img class="viewall" src="{{ url_for('static', filename='images/viewall.png') }}" /></a>
         </ul>
     </div>
 
+    <!-- javascript for book filters -->
     <script>
         function filterBooks() {
             const genre = document.getElementById('genre-filter').value;
@@ -345,6 +351,5 @@
             });
         }
     </script>
-
 </body>
 </html>

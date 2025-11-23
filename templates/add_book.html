@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -7,132 +8,10 @@
     <meta charset="utf-8" />
     <title>Add Book – ShelfSpace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        /* Flash popup */
-        .flash-popup {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 12px 18px;
-            border-radius: 8px;
-            z-index: 9999;
-            animation: fadeInOut 3s ease forwards;
-            font-size: 1rem;
-        }
-
-        @keyframes fadeInOut {
-            0% {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            10% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            90% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-        }
-
-        /* Buttons above cover */
-        .button-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .upload-btn, .delete-cover-btn {
-            font-size: 1rem;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .upload-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-        }
-
-            .upload-btn:hover {
-                background: #0056b3;
-            }
-
-        .delete-cover-btn {
-            background: #a30000;
-            color: white;
-            border: none;
-        }
-
-            .delete-cover-btn:hover {
-                background: #cc0000;
-            }
-
-        /* Cover preview */
-        .cover-preview {
-            width: 220px;
-            height: 300px;
-            object-fit: contain;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            margin-top: 10px;
-            background: white;
-        }
-
-        /* Form inputs/textarea */
-        .edit-form input,
-        .edit-form textarea {
-            width: 100%;
-            padding: 8px 10px;
-            font-size: 0.9rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-family: inherit;
-            background-color: #f5f5f5; /* same grey as other fields */
-        }
-
-        .edit-form textarea {
-            resize: vertical;
-        }
-
-        .edit-form label {
-            font-size: 1.1rem;
-            font-weight: 500;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .edit-btn {
-            margin-top: 10px;
-            padding: 10px 18px;
-            font-size: 1rem;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-            .edit-btn:hover {
-                background: #218838;
-            }
-    </style>
 </head>
 <body>
     <div class="page-container">
-
-        <!-- NAVBAR -->
+        <!-- top navbar -->
         <div class="navbar">
             <div class="nav-left">
                 <a href="{{ url_for('home') }}">Home</a>
@@ -149,22 +28,27 @@
             </div>
         </div>
 
-        <!-- Back button -->
+        <!-- flash message pop ups -->
+        <div class="flash-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- back button -->
         <a href="{{ url_for('books') }}" class="back-top-left">← Back to Book List</a>
 
-        <!-- Flash messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="flash-popup {{ category }}">{{ message }}</div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
-
+        <!-- main page content -->
         <main class="edit-page">
             <div class="edit-wrapper">
 
-                <!-- LEFT COLUMN: Cover Preview + Buttons -->
+                <!-- left column - book cover -->
                 <div class="edit-image" style="display: flex; flex-direction: column; align-items: center;">
                     <div class="button-row">
                         <label for="cover" class="upload-btn">Upload Cover</label>
@@ -174,7 +58,7 @@
                     <img id="coverPreview" src="{{ url_for('static', filename='book_covers/default.png') }}" class="cover-preview" alt="Book Cover Preview">
                 </div>
 
-                <!-- RIGHT COLUMN: Form -->
+                <!-- right column - add form -->
                 <div class="edit-box">
                     <h2>Add New Book</h2>
                     <form method="POST" enctype="multipart/form-data" class="edit-form" id="addBookForm">
@@ -203,14 +87,13 @@
                         <button type="submit" class="edit-btn">Add Book</button>
                     </form>
                 </div>
-
             </div>
         </main>
     </div>
 
-    <!-- JS -->
+    <!-- javascript for cover -->
     <script>
-    // Cover preview
+    // cover preview
     const uploadInput = document.getElementById("cover");
     const coverPreview = document.getElementById("coverPreview");
     uploadInput.addEventListener("change", function () {
@@ -219,12 +102,13 @@
         }
     });
 
+    // remove cover
     document.getElementById("deleteCover").addEventListener("click", function () {
         uploadInput.value = "";
         coverPreview.src = "{{ url_for('static', filename='book_covers/default.png') }}";
     });
 
-    // Form validation for all fields including cover
+    // form validation for all fields
     document.getElementById("addBookForm").addEventListener("submit", function(e) {
         if (!uploadInput.value.trim()) {
             alert("Please upload a cover image.");

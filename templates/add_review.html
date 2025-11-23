@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -9,8 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
-    <!-- NAVBAR -->
+    <!-- top navbar -->
     <div class="navbar">
         <div class="nav-left">
             <a href="{{ url_for('home') }}">Home</a>
@@ -43,29 +43,40 @@
         </div>
     </div>
 
-    <!-- PAGE CONTENT -->
+    <!-- flash message pop ups -->
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- main page content -->
     <div class="edit-page">
 
-        <!-- Back to Book Detail -->
+        <!-- back button -->
         <a href="{{ url_for('book_detail', isbn=book.ISBN) }}" class="back-top-left">← Back to Book Details</a>
-
         <div class="edit-wrapper">
 
-            <!-- Book Cover -->
+            <!-- book cover -->
             <div class="edit-image">
                 <img src="{{ url_for('static', filename='book_covers/' ~ book.ISBN ~ '.jpg') }}"
                      onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
                      alt="Cover for {{ book.Title }}">
             </div>
 
-            <!-- Review Form Box -->
+            <!-- review form -->
             <div class="edit-box">
                 <h2>Review for "{{ book.Title }}"</h2>
                 <p class="review-author">By: {{ current_user.username }}</p>
-
                 <form method="POST" action="{{ url_for('add_review', isbn=book.ISBN) }}" class="review-form">
 
-                    <!-- Star Rating -->
+                    <!-- star ratings -->
                     <label><strong>Rating:</strong></label>
                     <div class="star-rating">
                         <input type="radio" id="star5" name="rating" value="5">
@@ -84,22 +95,18 @@
                         <label for="star1" title="1 star">★</label>
                     </div>
 
-
-                    <!-- Review Text -->
+                    <!-- review text box -->
                     <label for="review_text"><strong>Review:</strong></label>
                     <textarea name="review_text" id="review_text" placeholder="Write your review here..." required></textarea>
 
-                    <!-- Submit Button -->
+                    <!-- submit review button -->
                     <div style="margin-top: 15px;">
                         <button type="submit" class="submit-review-btn">Submit Review</button>
                     </div>
                 </form>
-
             </div>
-
         </div>
     </div>
-
 </body>
 </html>
 

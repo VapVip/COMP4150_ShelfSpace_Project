@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -7,20 +8,9 @@
     <title>About – ShelfSpace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo3.png') }}">
-    <style>
-        /* Quick inline styles for stars */
-        .stars {
-            color: gold;
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .filter-container {
-            margin: 20px 0;
-        }
-    </style>
 </head>
 <body>
+    <!-- top navbar -->
     <div class="navbar">
         <div class="nav-left">
             <a href="{{ url_for('home') }}">Home</a>
@@ -54,6 +44,7 @@
         </div>
     </div>
 
+    <!-- flash message pop ups -->
     <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -66,6 +57,7 @@
         {% endwith %}
     </div>
 
+    <!-- main page content -->
     <div class="details">
         <div class="details-title">
             <h1 style="font-weight: bold; font-size: 45px; margin-top: 0px; margin-bottom: 45px; justify-self: center;">Our Mission</h1>
@@ -78,6 +70,5 @@
         </p>
         <p>- ShelfSpace Team</p>
     </div>
-
 </body>
 </html>

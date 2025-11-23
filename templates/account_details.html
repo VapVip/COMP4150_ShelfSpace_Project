@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- import font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -7,9 +8,8 @@
     <title>My Account - ShelfSpace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
-    <!-- NAVBAR -->
+    <!-- top navbar -->
     <div class="navbar">
         <div class="nav-left">
             <a href="{{ url_for('home') }}">Home</a>
@@ -43,6 +43,7 @@
         </div>
     </div>
 
+    <!-- flash message pop ups -->
     <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -55,11 +56,13 @@
         {% endwith %}
     </div>
 
+    <!-- main page content -->
     <div class="details">
         <div class="details-title">
             <h1 style="font-weight: bold; font-size: 15px; opacity: 50%;margin-bottom: 0px; justify-self: center;">Logged in as</h1>
             <h1 style="font-weight: bold; font-size: 45px; margin-top: 0px; margin-bottom: 45px; justify-self: center;">{{ current_user.username }}</h1>
         </div>
+        <!-- update email -->
         <form method="POST" action="/account_details" class="details-form">
             <label>Email Address:</label><br>
             <input type="text" name="email"><br><br>
@@ -67,6 +70,7 @@
             <button type="submit">Update Email</button>
             <br /><br /><br />
         </form>
+        <!-- update password -->
         <form method="POST" action="/account_details" class="details-form">
             <label>Current Password:</label><br>
             <input type="password" name="password"><br><br>
@@ -76,20 +80,16 @@
             <button type="submit">Update Password</button>
             <br /><br /><br />
         </form>
+        <!-- delete account -->
         <form method="POST" action="/account/delete">
             <button type="submit" class="remove" onclick="return confirm('Are you sure you want to delete your account? This cannot be undone.');">Remove Account</button>
         </form>
-    </div>
+    </div><br /><br /><br /><br />
 
-    <br />
-    <br />
-    <br />
-    <br />
-
+    <!-- my reviews section -->
     {% if current_user.role == 'customer' %}
     <div class="user-reviews">
         <h2>My Reviews</h2>
-
         {% if reviews|length > 0 %}
         <ul class="reviews-list">
             {% for r in reviews %}
@@ -97,14 +97,13 @@
             <li class="review-item">
 
                 <div class="review-header">
-                    <!-- Left column: cover -->
+                    <!-- left column - book cover -->
                     <div class="review-cover">
                         <img src="{{ url_for('static', filename='book_covers/' ~ r.ISBN ~ '.jpg') }}"
                              onerror="this.onerror=null; this.src='{{ url_for('static', filename='book_covers/default.jpg') }}';"
                              alt="Cover for {{ r.book_title }}">
                     </div>
-
-                    <!-- Right column: text info -->
+                    <!-- right column - book info -->
                     <div class="review-info">
                         <div class="review-title">{{ r.book_title }}</div>
                         <div class="review-author">by {{ r.book_author }}</div>
@@ -122,8 +121,7 @@
                         <p class="review-text">{{ r.ReviewText }}</p>
                     </div>
                 </div>
-
-                <!-- Buttons under the text info -->
+                <!-- review buttons -->
                 <div class="review-actions">
                     <form method="post" action="{{ url_for('delete_review', review_id=r.ReviewID) }}">
                         <button type="submit" class="remove">Delete</button>
@@ -131,7 +129,6 @@
                 </div>
             </li>
             </a>
-
             {% endfor %}
         </ul>
         {% else %}
@@ -139,6 +136,5 @@
         {% endif %}
     </div>
     {% endif %}
-
 </body>
 </html>
