@@ -964,6 +964,36 @@ img {
 }
 
 
+.quantity-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.quantity-box input {
+    width: 80px;
+    text-align: center;
+    font-size: 1rem;
+    padding: 5px;
+}
+
+.qty-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #eee;
+    border-radius: 6px;
+}
+
+.qty-btn:hover {
+    background-color: #ddd;
+}
+
+
+
 
 
 

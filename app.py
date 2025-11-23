@@ -715,7 +715,7 @@ def edit_book(isbn):
     if current_user.role not in ["Manager", "Staff", "Admin"]:
         return "Access Denied"
 
-
+    # Connect to DB
     connection = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -724,7 +724,7 @@ def edit_book(isbn):
     )
     cursor = connection.cursor(dictionary=True)
 
-    # Get the book info
+    # Fetch existing book data
     cursor.execute("SELECT * FROM Book WHERE ISBN=%s", (isbn,))
     book = cursor.fetchone()
 
@@ -733,19 +733,36 @@ def edit_book(isbn):
         author = request.form.get("author")
         genre = request.form.get("genre")
         price = request.form.get("price")
+        stockqty = request.form.get("stockqty")  # ⭐ Load StockQty from form
 
         cursor.execute(
-            "UPDATE Book SET Title=%s, Author=%s, Genre=%s, Price=%s WHERE ISBN=%s",
-            (title, author, genre, price, isbn)
+            """
+            UPDATE Book
+            SET Title=%s,
+                Author=%s,
+                Genre=%s,
+                Price=%s,
+                StockQty=%s
+            WHERE ISBN=%s
+            """,
+            (title, author, genre, price, stockqty, isbn)
         )
+
         connection.commit()
         cursor.close()
         connection.close()
+
+        flash("Book updated successfully!", "success")
         return redirect(url_for("books"))
 
     cursor.close()
     connection.close()
+
     return render_template("edit_book.html", book=book)
+
+
+
+
 
 # ----- Employee Delete Book -----
 @app.route("/books/delete/<isbn>", methods=["POST"])
@@ -773,6 +790,8 @@ def delete_book(isbn):
     return redirect(url_for("books"))
 
 
+
+
 # ----- Employee Update Book Info -----
 @app.route("/books/manage")
 @login_required
@@ -788,6 +807,9 @@ def employee_books():
     cursor.close()
     connection.close()
     return render_template("employee_books.html", books=books)
+
+
+
 
 
 

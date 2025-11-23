@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo3.png') }}">
 </head>
+
 <body>
     <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -89,6 +90,10 @@
                         <label for="genre">Genre</label>
                         <input type="text" id="genre" name="genre"
                                value="{{ book.Genre }}" required>
+
+                        <label for="stockqty">Stock Quantity</label>
+                        <input type="number" id="stockqty" name="stockqty"
+                            value="{{ book.StockQty }}" min="0" required>
 
                         <label for="price">Price ($)</label>
                         <input type="number" id="price" name="price"
