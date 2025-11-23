@@ -28,7 +28,7 @@
             <a class="navbar_active" href="{{ url_for('login') }}">Log In</a>
             {% else %}
             <p>Hello, {{ current_user.username }}!</p>
-            <a href="{{ url_for('accountdetails') }}">Account</a>
+            <a href="{{ url_for('account_details') }}">Account</a>
             <a href="{{ url_for('logout') }}">Log Out</a>
             {% endif %}
         </div>

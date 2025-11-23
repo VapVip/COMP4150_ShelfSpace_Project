@@ -37,7 +37,7 @@
                 <img src="{{ url_for('static', filename='images/heart-icon.png') }}" alt="Wishlist" class="wishlist-icon">
             </a>
             {% endif %}
-            <a class="navbar_active" href="{{ url_for('accountdetails') }}">Account</a>
+            <a class="navbar_active" href="{{ url_for('account_details') }}">Account</a>
             <a href="{{ url_for('logout') }}">Log Out</a>
             {% endif %}
         </div>
@@ -60,14 +60,14 @@
             <h1 style="font-weight: bold; font-size: 15px; opacity: 50%;margin-bottom: 0px; justify-self: center;">Logged in as</h1>
             <h1 style="font-weight: bold; font-size: 45px; margin-top: 0px; margin-bottom: 45px; justify-self: center;">{{ current_user.username }}</h1>
         </div>
-        <form method="POST" action="/accountdetails" class="details-form">
+        <form method="POST" action="/account_details" class="details-form">
             <label>Email Address:</label><br>
             <input type="text" name="email"><br><br>
 
             <button type="submit">Update Email</button>
             <br /><br /><br />
         </form>
-        <form method="POST" action="/accountdetails" class="details-form">
+        <form method="POST" action="/account_details" class="details-form">
             <label>Current Password:</label><br>
             <input type="password" name="password"><br><br>
 
@@ -139,9 +139,6 @@
         {% endif %}
     </div>
     {% endif %}
-
-
-
 
 </body>
 </html>

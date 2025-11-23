@@ -257,9 +257,9 @@ def home():
 
 
 # ----- Account Details ------ 
-@app.route("/accountdetails", methods=["GET", "POST"])
+@app.route("/account_details", methods=["GET", "POST"])
 @login_required
-def accountdetails():
+def account_details():
     connection = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -294,7 +294,7 @@ def accountdetails():
             flash("Email updated successfully!", "success")
             cursor.close()
             connection.close()
-            return redirect(url_for("accountdetails"))
+            return redirect(url_for("account_details"))
 
         if "password" in request.form:
             current_pw = request.form.get("password")
@@ -337,8 +337,6 @@ def accountdetails():
     """, (current_user.id,))
     reviews = cursor.fetchall()
 
-
-
     cursor.close()
     connection.close()
 
@@ -365,7 +363,7 @@ def edit_review(review_id):
         flash("Review not found.", "error")
         cursor.close()
         connection.close()
-        return redirect(url_for("accountdetails"))
+        return redirect(url_for("account_details"))
 
     if request.method == "POST":
         new_rating = request.form.get("rating")
@@ -378,7 +376,7 @@ def edit_review(review_id):
         flash("Review updated successfully!", "success")
         cursor.close()
         connection.close()
-        return redirect(url_for("accountdetails"))
+        return redirect(url_for("account_details"))
 
     cursor.close()
     connection.close()
@@ -403,7 +401,7 @@ def delete_review(review_id):
     cursor.close()
     connection.close()
     flash("Review deleted successfully!", "success")
-    return redirect(url_for("accountdetails"))
+    return redirect(url_for("account_details"))
 
 
 
