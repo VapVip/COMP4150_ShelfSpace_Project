@@ -151,8 +151,8 @@
                             <label>Sort:</label>
                             <select name="sort" onchange="this.form.submit()">
                                 <option value="">Default</option>
-                                <option value="low" {% if request.args.get('sort')= ='low' %}selected{% endif %}>Rating: Low → High</option>
-                                <option value="high" {% if request.args.get('sort')= ='high' %}selected{% endif %}>Rating: High → Low</option>
+                                <option value="low" {% if request.args.get('sort')=='low' %}selected{% endif %}>Rating: Low → High</option>
+                                <option value="high" {% if request.args.get('sort')=='high' %}selected{% endif %}>Rating: High → Low</option>
                             </select>
 
                             <!-- filter dropdown -->
@@ -160,7 +160,7 @@
                             <select name="stars" onchange="this.form.submit()">
                                 <option value="">All</option>
                                 {% for i in range(5,0,-1) %}
-                                <option value="{{ i }}" {% if request.args.get('stars')= =i|string %}selected{% endif %}>
+                                <option value="{{ i }}" {% if request.args.get('stars')==i|string %}selected{% endif %}>
                                     {{ i }} ★ reviews
                                 </option>
                                 {% endfor %}
