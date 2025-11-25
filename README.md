@@ -22,6 +22,8 @@
     
     pip install -r requirements.txt  
 
+    python app.py
+
 <br>
 
 **For Mac:**
@@ -31,4 +33,6 @@
     source venv/bin/activate
     
     pip install -r requirements.txt
+
+    python app.py
 
