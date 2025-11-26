@@ -1,0 +1,79 @@
+CREATE DATABASE ShelfSpace;
+USE ShelfSpace;
+
+CREATE TABLE Customer (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Employee (
+    EmployeeID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    Role ENUM('Admin', 'Manager', 'Staff') NOT NULL
+);
+
+CREATE TABLE Book (
+    ISBN CHAR(13) PRIMARY KEY,
+    Title VARCHAR(200) NOT NULL,
+    Author VARCHAR(100) NOT NULL,
+    Genre VARCHAR(50),
+    Description TEXT,
+    Price DECIMAL(6,2) NOT NULL,
+    StockQty INT NOT NULL,
+    AddedBy INT,
+    FOREIGN KEY (AddedBy) REFERENCES Employee(EmployeeID)
+);
+
+CREATE TABLE Review (
+    ReviewID INT AUTO_INCREMENT PRIMARY KEY,
+    Rating INT CHECK (Rating BETWEEN 1 AND 5),
+    ReviewText TEXT,
+    Date DATE DEFAULT (CURRENT_DATE),
+    CustomerID INT,
+    ISBN CHAR(13),
+    ModeratedBy INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (ISBN) REFERENCES Book(ISBN),
+    FOREIGN KEY (ModeratedBy) REFERENCES Employee(EmployeeID)
+);
+
+CREATE TABLE Purchase (
+    PurchaseID INT AUTO_INCREMENT PRIMARY KEY,
+    PurchaseDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    TotalPrice DECIMAL(8,2),
+    CustomerID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+CREATE TABLE PurchaseItem (
+    PurchaseID INT,
+    ISBN CHAR(13),
+    Quantity INT NOT NULL,
+    PRIMARY KEY (PurchaseID, ISBN),
+    FOREIGN KEY (PurchaseID) REFERENCES Purchase(PurchaseID),
+    FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+);
+
+CREATE TABLE Wishlist (
+    WishlistID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT NOT NULL,
+    ISBN VARCHAR(20) NOT NULL,
+    DateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY (CustomerID, ISBN),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+);
+
+CREATE TABLE Cart (
+    CustomerID INT NOT NULL,
+    ISBN VARCHAR(20) NOT NULL,
+    Quantity INT DEFAULT 1,
+    PRIMARY KEY (CustomerID, ISBN),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID) ON DELETE CASCADE,
+    FOREIGN KEY (ISBN) REFERENCES Book(ISBN) ON DELETE CASCADE
+);
+
